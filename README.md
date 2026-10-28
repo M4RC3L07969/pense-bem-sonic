@@ -1,0 +1,74 @@
+# Pense Bem — Uma Aventura Científica com Sonic
+
+Versão em aplicativo do **Pense Bem**, o brinquedo eletrônico de perguntas e respostas da Tectoy, usando as perguntas do livro **"Pense Bem — Uma Aventura Científica com Sonic"** (Nova Cultural, 1993).
+
+Feito em **React Native** com **Expo**, roda no Android, no iOS e no navegador (pelo [Expo Snack](https://snack.expo.dev)).
+
+> Trabalho (G2) da disciplina **Desenvolvimento Mobile** — Sistemas de Informação.
+> Competência: construir aplicativos híbridos (Android e iOS) com React Native.
+
+## Como o jogo funciona
+
+O livro tem 6 programas. Cada programa é aberto digitando o código dele, igual no aparelho original (`LIVRO` → código → `ENTER`):
+
+| Programa | Código | Perguntas |
+| -------- | ------ | --------- |
+| 1        | `021`  | 1 a 30    |
+| 2        | `022`  | 31 a 60   |
+| 3        | `023`  | 61 a 90   |
+| 4        | `024`  | 91 a 120  |
+| 5        | `025`  | 121 a 150 |
+| 6        | `026`  | avaliação geral |
+
+Regras de pontuação:
+
+- Cada programa tem **30 perguntas**, com 4 alternativas (as cores/letras do Pense Bem).
+- O jogador tem **3 tentativas** por pergunta.
+- Acertou na 1ª tentativa: **3 pontos**. Na 2ª: **2 pontos**. Na 3ª: **1 ponto**. Errou as três: **0 pontos**.
+- No fim das 30 perguntas, o app mostra o **total de pontos** (máximo de 90 por programa).
+
+## Como rodar
+
+Pré-requisitos: [Node.js](https://nodejs.org) (versão LTS) e o app **Expo Go** no celular ([Android](https://play.google.com/store/apps/details?id=host.exp.exponent) / [iOS](https://apps.apple.com/app/expo-go/id982107779)).
+
+```bash
+git clone https://github.com/M4RC3L07969/pense-bem-sonic.git
+cd pense-bem-sonic
+npm install
+npx expo start
+```
+
+Depois é só escanear o QR code com o Expo Go (Android) ou com a câmera (iOS). Para abrir no navegador, aperte `w` no terminal.
+
+## Estrutura
+
+```
+pense-bem-sonic/
+├── App.js          # tela principal do app
+├── index.js        # ponto de entrada (registra o App no Expo)
+├── app.json        # configuração do Expo (nome, ícone, splash)
+├── assets/         # ícones e imagens do app
+└── package.json    # dependências e scripts
+```
+
+## Andamento
+
+- [x] Repositório e projeto Expo criados
+- [ ] Gabarito dos 6 programas digitado
+- [ ] Tela de escolha do programa (digitar o código)
+- [ ] Tela de pergunta com as 4 alternativas e 3 tentativas
+- [ ] Contagem de pontos e tela de resultado
+- [ ] Versão no Expo Snack para a entrega
+
+## Entrega
+
+- Apresentação: **17/11/2026**
+- Entregar no Google Classroom o PDF da atividade (com o gabarito preenchido) + o link do Snack.
+
+## Direitos autorais
+
+Projeto acadêmico, sem fins lucrativos. *Sonic the Hedgehog* é marca registrada da SEGA. O livro *Pense Bem* é da Editora Nova Cultural / Tectoy (licenciado da VTech). O PDF e as imagens do livro **não** fazem parte deste repositório — se for guardar uma cópia local, use a pasta `referencias/`, que é ignorada pelo Git.
+
+## Licença
+
+O código deste repositório está sob a licença [MIT](LICENSE).
