@@ -1,66 +1,127 @@
-# Plano — Pense Bem: Uma Aventura Científica com Sonic
+# Plano de implementação — Pense Bem: Uma Aventura Científica com Sonic
+
+Roteiro para o **Claude executar**. O Marcelo aprova o plano, manda executar cada fase e autoriza os commits.
 
 Entrega e apresentação: **17/11/2026**. Grupo: Marcelo de Moura Maia Júnior, Pedro Augusto Pereira da Silva, Yago Amaro Zamborlini.
 
-## O que o professor cobra
+## Regras de execução
 
-- App em React Native que joga os programas do livro: **30 perguntas** por programa, **3 tentativas** por pergunta, **3/2/1/0 pontos** e o **total no fim**.
-- Entrega no Classroom: documento com nomes e RAs, nome do livro, **códigos dos programas** (021 a 025), **gabarito marcado nas cores** e o **link do Snack**, salvo em PDF.
-- Apresentação obrigatória de pelo menos um integrante.
+1. **Nunca fazer commit, push ou qualquer outra operação que altere o Git sem autorização explícita do Marcelo.** Ao fim de cada fase, propor as mensagens de commit e esperar o "pode commitar".
+2. Executar **uma fase por vez**, só quando o Marcelo mandar. Ao terminar, parar no **ponto de parada** da fase e apresentar o resultado.
+3. Ninguém do grupo faz tarefa técnica. O Marcelo só: aprova, testa no iPhone quando pedido, envia os RAs, faz o push (ou autoriza) e apresenta.
+4. Definição de pronto de toda fase:
+   - `npm test`, `npm run lint` e `npm run format:check` passando;
+   - app aberto no navegador (Playwright) e conferido por screenshot, quando a fase mexer em tela;
+   - teste no Snack (SDK 55) quando a fase mexer em código do app;
+   - README ("Andamento") e este plano atualizados (sem commitar).
+5. Seguir o `CLAUDE.md`: JavaScript, JSDoc nas funções exportadas, sem comentário linha a linha, `StyleSheet` + tokens do tema, só peças que rodam no Expo Go/Snack.
+6. Direitos autorais: não desenhar o Sonic nem nenhum personagem, não usar logotipos (Pense Bem, Tectoy, SEGA), não copiar imagens do livro. O PDF fica em `referencias/` e nunca é versionado.
 
-## Decisões
+## Decisões já tomadas
 
-| Tema        | Decisão                                                                                                                                                                   |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Modo do app | Igual ao aparelho: a pessoa lê a pergunta no livro e responde no app. O app é o "aparelho": visor, teclas `LIVRO`, números, `ENTER` e as 4 teclas coloridas.              |
-| Respostas   | **Cores**, como no livro e no documento: vermelho, amarelo, azul, verde (nessa ordem). O gabarito troca A/B/C/D por cores.                                                |
-| Gabarito    | O Claude lê as páginas e propõe a cor de cada resposta, marcando as que tiver dúvida; o grupo confere.                                                                    |
-| Programa 6  | Código 026: sorteia 30 das 150 perguntas dos programas 1 a 5. O visor mostra o número original da pergunta, para achar no livro.                                          |
-| Extras      | Sons de acerto/erro, mostrar a cor certa depois de 3 erros, animações no visor e nas teclas, recorde por programa salvo no celular.                                       |
-| Telas       | **Uma tela só**, que é o aparelho. O que muda é o estado do aparelho (esperando livro → digitando código → pergunta → resultado), não a tela. Sem Expo Router.            |
-| Versão      | Projeto no Expo SDK 58; a entrega roda no Snack (SDK 55). Testar no Snack ao fim de cada fase. Só peças básicas do React Native (`Animated` nativo em vez de Reanimated). |
+| Tema        | Decisão                                                                                                                                                |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Modo do app | Igual ao aparelho: a pergunta é lida no livro; o app é o aparelho (visor, `LIVRO`, números, `ENTER`, 4 teclas coloridas). O app não mostra enunciados. |
+| Respostas   | Cores: `vermelho`, `amarelo`, `azul`, `verde` (ordem do livro e da tabela do documento).                                                               |
+| Gabarito    | O Claude resolve as 150 perguntas sozinho, com conferência dupla. Só as dúvidas reais vão para o Marcelo decidir.                                      |
+| Programa 6  | Código `026`: sorteia 30 das 150 perguntas; o visor mostra o número original da pergunta.                                                              |
+| Extras      | Sons de acerto/erro, cor certa revelada após 3 erros, animações no visor e nas teclas, recorde por programa.                                           |
+| Telas       | Uma tela só (o aparelho); o que muda é o estado. Sem Expo Router.                                                                                      |
+| Versão      | Projeto no SDK 58; entrega no Snack (SDK 55). Usar `Animated` do React Native, não Reanimated.                                                         |
 
-## Como o aparelho funciona (máquina de estados)
+## Fase 1 — Gabarito (29/10 – 31/10) — concluída
 
-```
-DESLIGADO/INICIO ──LIVRO──▶ DIGITANDO_CODIGO ──3 dígitos + ENTER──▶ PERGUNTA
-                                 │ código inválido → visor mostra erro e volta a esperar
-PERGUNTA ──tecla colorida──▶ certo?  sim → pontos da tentativa → próxima PERGUNTA
-                                     não → tentativa 2, 3 → depois da 3ª, mostra a cor certa → próxima
-última pergunta respondida ──▶ RESULTADO (total, recorde) ──LIVRO──▶ novo programa
-```
+**Objetivo:** `src/data/gabarito.json` com as 150 respostas em cores, confiáveis.
 
-Toda essa lógica fica em `src/logic/` como funções puras (um _reducer_: recebe o estado atual e uma ação, devolve o próximo estado), testada com Jest. A tela só desenha o estado e envia as teclas apertadas.
+1. Trocar o formato do gabarito de letras para cores:
+   - `src/logic/gabarito.js`: `ALTERNATIVAS` vira `CORES = ['vermelho', 'amarelo', 'azul', 'verde']`; remover os campos opcionais `enunciado` e `alternativas` (o app não mostra texto).
+   - Atualizar os testes, a seção "Formato do gabarito" do README e o `CLAUDE.md`.
+2. Resolver as perguntas:
+   - Renderizar cada página do PDF em boa resolução (150 dpi) e ler as perguntas do programa.
+   - Para cada pergunta, registrar a cor, uma justificativa curta e a confiança (alta / média / baixa).
+   - Atenção especial às perguntas de figura, labirinto (51–56), cruzadinha (81–86), quebra-cabeça (27–30) e sequências: ler com zoom na região.
+3. Conferência dupla: segunda leitura de todas as perguntas, sem olhar a primeira resposta; comparar. Divergência vira dúvida.
+4. Gerar `docs/gabarito-revisao.md` (número, cor, justificativa, confiança) — serve para a apresentação e para o grupo estudar.
+5. Os testes de `__tests__/dados-do-gabarito.test.js` deixam de ser "todo" e passam a exigir os 5 programas completos.
 
-## Fases
+**Ponto de parada 1:** mostrar o resumo (quantas de confiança alta/média/baixa) e a lista curta de dúvidas reais para o Marcelo decidir. Propor o commit.
 
-Cada fase termina com `npm test`, `npm run lint`, `npm run format:check` e um teste no Snack.
+## Fase 2 — Lógica do aparelho (31/10 – 02/11)
 
-| #   | Fase                 | O que sai                                                                                                                                                         | Quando        |
-| --- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| 0   | Configuração         | Repo, Expo, padrões, testes, README. **Feito.**                                                                                                                   | 28/10         |
-| 1   | Gabarito             | Gabarito em cores no `gabarito.json`; proposta do Claude para os programas 1 a 5 com dúvidas marcadas; revisão do grupo.                                          | 29/10 – 03/11 |
-| 2   | Lógica do aparelho   | Máquina de estados, sorteio do programa 6, recorde (com o armazenamento separado da lógica). Tudo testado.                                                        | 29/10 – 01/11 |
-| 3   | Visual               | 2 ou 3 propostas de visual do aparelho para o grupo escolher (skill frontend-design); depois tema (cores, fontes) e componentes: visor, tecla, teclado.           | 02/11 – 05/11 |
-| 4   | Aparelho funcionando | Tela única ligando visual e lógica; jogo completo de ponta a ponta no celular e no navegador.                                                                     | 05/11 – 08/11 |
-| 5   | Extras               | Sons próprios (bipes gerados por nós, sem direitos autorais), animações, cor certa após 3 erros, recorde.                                                         | 08/11 – 11/11 |
-| 6   | Entrega              | Snack salvo na conta Expo e link testado; documento preenchido (nomes, RAs, livro, códigos e gabarito marcado nas cores gerado a partir do `gabarito.json`); PDF. | 12/11 – 14/11 |
-| —   | Folga                | Correções e ensaio da apresentação.                                                                                                                               | 15/11 – 16/11 |
+**Objetivo:** toda a regra do jogo em funções puras, testadas, sem nada de interface.
 
-As fases 1 e 2 andam juntas: o gabarito depende do grupo revisar, então começa primeiro.
+1. `src/logic/aparelho.js` — máquina de estados no formato _reducer_ (`reduzir(estado, acao) → novoEstado`, usado depois com `useReducer`):
+   - Fases do aparelho: `inicio` → `codigo` → `pergunta` → `revelando` (mostra a cor certa após 3 erros) → `resultado`.
+   - Ações: `LIVRO`, `DIGITO` (0–9), `APAGAR`, `ENTER`, `COR` (uma das 4 cores), `AVANCAR` (disparada pela tela depois da animação de acerto/erro/revelação).
+   - Regras: `LIVRO` a qualquer momento recomeça a digitação do código; `ENTER` só aceita 3 dígitos de um código válido (021–026), senão o visor mostra erro e limpa; tecla sem efeito na fase atual é ignorada (estado não muda); pontos sempre via `pontosDaPergunta`.
+2. `src/logic/sorteio.js` — `sortearPerguntas(perguntas, quantidade, aleatorio = Math.random)`: embaralhamento de Fisher-Yates (todas as ordens com a mesma chance), sem repetição, gerador de números injetável para os testes.
+3. `src/logic/recorde.js` — `atualizarRecorde(recordes, codigo, pontos)` puro (só sobe, nunca desce).
+4. `src/services/armazenamento.js` — ler/gravar os recordes com `@react-native-async-storage/async-storage` (instalar com `npx expo install`). Se falhar, o app segue sem recorde, sem quebrar.
+5. Testes: jogo completo de 30 perguntas (tudo na 1ª = 90, tudo errado = 0, misto); código inválido; menos de 3 dígitos; `APAGAR`; `LIVRO` no meio do jogo; teclas ignoradas na fase errada; revelação após 3 erros; programa 6 com 30 perguntas distintas vindas dos programas 1–5; recorde só subindo; armazenamento com falha simulada.
+6. Teste rápido no Snack de que o AsyncStorage funciona no SDK 55.
+
+**Ponto de parada 2:** resumo dos testes e de qualquer decisão de regra que surgiu. Propor o commit.
+
+## Fase 3 — Visual (02/11 – 05/11)
+
+**Objetivo:** identidade visual escolhida pelo Marcelo e componentes prontos.
+
+1. Carregar as skills `frontend-design` e `expo-native-ui`.
+2. Criar **3 propostas** de visual do aparelho (direções diferentes de cor, forma e tipografia), renderizadas como imagens a partir do próprio app no navegador.
+3. **Ponto de parada 3a:** o Marcelo escolhe uma proposta (ou pede ajustes).
+4. `src/theme/index.js`: tokens de cor (incluindo as 4 cores das teclas, com contraste conferido), tipografia, espaçamento, raios e sombras.
+5. Componentes em `src/components/`:
+   - `Visor` — visor estilo LCD; dígitos de 7 segmentos desenhados com `View` (sem depender de fonte externa).
+   - `Tecla` — tecla genérica (número, `LIVRO`, `ENTER`, `APAGAR`).
+   - `TeclaCor` — tecla colorida de resposta.
+   - `Teclado` — organiza as teclas.
+6. Conferir em larguras de iPhone pequeno e grande e no navegador.
+
+**Ponto de parada 3b:** screenshots dos componentes. Propor o commit.
+
+## Fase 4 — Aparelho funcionando (05/11 – 08/11)
+
+**Objetivo:** jogo completo de ponta a ponta.
+
+1. `src/screens/Aparelho.js`: `useReducer(reduzir)`, desenha o estado no `Visor`, envia as teclas; temporizadores para `AVANCAR` (limpos ao desmontar a tela).
+2. `App.js` passa a só mostrar a tela `Aparelho`.
+3. O visor mostra: número da pergunta (numeração do livro), tentativa atual, acerto/erro, pontos no fim.
+4. Teste automatizado no navegador (Playwright): jogar um programa inteiro clicando nas teclas e conferir o total.
+5. Teste no Snack.
+
+**Ponto de parada 4:** o Marcelo testa no iPhone. Propor o commit.
+
+## Fase 5 — Extras (08/11 – 11/11)
+
+1. **Sons:** gerar bipes próprios (ondas simples criadas por script, sem direitos autorais) em `assets/sons/`; tocar com `expo-audio` (instalar com `npx expo install`). Testar no Snack; se não funcionar lá, o app segue sem som.
+2. **Animações** (`Animated`): visor pisca no acerto/erro, tecla afunda ao tocar, revelação da cor certa pisca a tecla correta.
+3. **Recorde:** mostrar no visor ao entrar no programa e na tela de resultado; avisar "novo recorde".
+4. Testes do que for lógica; screenshots do resto; Snack.
+
+**Ponto de parada 5:** o Marcelo testa no iPhone. Propor o commit.
+
+## Fase 6 — Entrega (12/11 – 14/11)
+
+1. **Snack:** criar o Snack na conta Expo do Marcelo pelo Chrome dele (ele já está logado). Se o "Import git repository" continuar falhando, enviar os arquivos pelo "Import files". Testar nas prévias Web, Android e iOS do Snack.
+2. **Documento:** gerar o `.docx` preenchido por script (`python-docx`): nomes e RAs, livro escolhido, códigos 021–025 e o gabarito marcado nas células da cor certa, tudo a partir do `gabarito.json`. Converter para PDF.
+3. **Ponto de parada 6:** o Marcelo confere o Snack e o PDF. Entregar no Classroom só ele, ou o Claude com autorização explícita.
+
+**Folga:** 15/11 – 16/11 para correções.
 
 ## Riscos
 
-| Risco                                                     | O que fazer                                                                                      |
-| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| Gabarito errado (pontuação errada no jogo e no documento) | Dúvidas marcadas pelo Claude; o grupo confere todas as 150; testes garantem formato e sequência. |
-| Algo do SDK 58 não rodar no Snack (SDK 55)                | Testar no Snack ao fim de cada fase; evitar bibliotecas extras.                                  |
-| Sons ou armazenamento não funcionarem no Snack            | Testar cedo (fase 2/5); o app tem que funcionar sem som, e o recorde é extra.                    |
-| "Import git repository" do Snack falhou com o repo        | Enviar os arquivos para o Snack de outro jeito na fase 6 (deixar folga para isso).               |
-| RAs do grupo                                              | Marcelo envia antes da fase 6.                                                                   |
+| Risco                                        | Plano                                                                                |
+| -------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Resposta errada no gabarito                  | Conferência dupla + dúvidas levadas ao Marcelo; testes garantem formato e sequência. |
+| Algo do SDK 58 não rodar no Snack (SDK 55)   | Testar no Snack ao fim das fases 2, 4 e 5; evitar bibliotecas extras.                |
+| Som ou AsyncStorage não funcionarem no Snack | Testar cedo; app funciona sem som e sem recorde.                                     |
+| Import do repositório no Snack falhou        | Usar "Import files"; deixar a fase 6 com folga.                                      |
+| RAs do grupo                                 | Marcelo envia antes da fase 6.                                                       |
 
-## Pendências
+## Pendências do Marcelo
 
-- [ ] RAs dos três integrantes.
-- [ ] Revisão do gabarito pelo grupo (fase 1).
-- [ ] Escolha do visual (fase 3).
+- [ ] Aprovar este plano.
+- [ ] Enviar os RAs dos três integrantes (até a fase 6).
+- [ ] Decidir as dúvidas do gabarito (ponto de parada 1).
+- [ ] Escolher o visual (ponto de parada 3a).
+- [ ] Testar no iPhone (pontos de parada 4 e 5).
