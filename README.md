@@ -40,6 +40,33 @@ npx expo start
 
 Depois é só escanear o QR code com o Expo Go (Android) ou com a câmera (iOS). Para abrir no navegador, aperte `w` no terminal.
 
+O Expo Go exige que o celular e o computador estejam logados na **mesma conta da Expo**. Faça login no terminal antes do primeiro `npx expo start` (veja abaixo se der erro).
+
+## Problemas comuns
+
+### `npx expo login` dá erro no Windows (`cmd.exe ... exited with non-zero code: 1`)
+
+É um bug do Expo CLI: ao abrir o navegador, ele passa o link de login sem aspas para o `cmd.exe`, que se confunde com os `&` do link, e o processo morre antes de receber a resposta do login. Solução no PowerShell:
+
+```powershell
+$env:BROWSER="none"
+npx expo login
+```
+
+O terminal mostra o link e fica esperando. Copie o link, abra no navegador, faça o login e confira com `npx expo whoami`.
+
+Alternativa sem navegador (só se a conta tiver senha): `npx expo login --no-browser -u SEU_USUARIO`.
+
+### iPhone: a câmera não reconhece o QR code
+
+- O app **Expo Go** precisa estar instalado; sem ele, a câmera ignora o link `exp://`.
+- Celular e computador no **mesmo Wi-Fi**.
+- Se o app abrir mas ficar carregando para sempre, o firewall do Windows está bloqueando: permita o Node.js em **Redes privadas** e confira se o Wi-Fi está marcado como rede privada.
+
+### `You're signed in to Expo Go as "...", but not signed in to Expo CLI`
+
+Falta o login no terminal. Veja o primeiro item desta seção.
+
 ## Comandos
 
 | Comando                | O que faz                                                 |
