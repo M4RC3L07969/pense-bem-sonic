@@ -19,15 +19,16 @@ Entrega e apresentação: **17/11/2026**. Grupo: Marcelo de Moura Maia Júnior, 
 
 ## Decisões já tomadas
 
-| Tema        | Decisão                                                                                                                                                |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Modo do app | Igual ao aparelho: a pergunta é lida no livro; o app é o aparelho (visor, `LIVRO`, números, `ENTER`, 4 teclas coloridas). O app não mostra enunciados. |
-| Respostas   | Cores: `vermelho`, `amarelo`, `azul`, `verde` (ordem do livro e da tabela do documento).                                                               |
-| Gabarito    | O Claude resolve as 150 perguntas sozinho, com conferência dupla. Só as dúvidas reais vão para o Marcelo decidir.                                      |
-| Programa 6  | Código `026`: sorteia 30 das 150 perguntas; o visor mostra o número original da pergunta.                                                              |
-| Extras      | Sons de acerto/erro, cor certa revelada após 3 erros, animações no visor e nas teclas, recorde por programa.                                           |
-| Telas       | Uma tela só (o aparelho); o que muda é o estado. Sem Expo Router.                                                                                      |
-| Versão      | Projeto no SDK 58; entrega no Snack (SDK 55). Usar `Animated` do React Native, não Reanimated.                                                         |
+| Tema        | Decisão                                                                                                                                                                                                                     |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Modo do app | Igual ao aparelho: a pergunta é lida no livro; o app é o aparelho (visor, `LIVRO`, números, `ENTER`, 4 teclas coloridas). O app não mostra enunciados.                                                                      |
+| Respostas   | Cores: `vermelho`, `amarelo`, `azul`, `verde` (ordem do livro e da tabela do documento).                                                                                                                                    |
+| Gabarito    | O Claude resolve as 150 perguntas sozinho, com conferência dupla. Só as dúvidas reais vão para o Marcelo decidir.                                                                                                           |
+| Programa 6  | Código `026`: sorteia 30 das 150 perguntas, em ordem crescente; o visor mostra o número original da pergunta.                                                                                                               |
+| Extras      | Sons de acerto/erro, cor certa revelada após 3 erros, animações no visor e nas teclas, recorde por programa.                                                                                                                |
+| Teclas      | `LIVRO` recomeça na hora, em qualquer momento. Erro com tentativas sobrando: o visor avisa e repete a pergunta. No resultado, `ENTER` joga o mesmo programa de novo (o `026` com novo sorteio) e `LIVRO` troca de programa. |
+| Telas       | Uma tela só (o aparelho); o que muda é o estado. Sem Expo Router.                                                                                                                                                           |
+| Versão      | Projeto no SDK 58; entrega no Snack (SDK 55). Usar `Animated` do React Native, não Reanimated.                                                                                                                              |
 
 ## Fase 1 — Gabarito (29/10 – 31/10) — concluída
 
@@ -46,7 +47,7 @@ Entrega e apresentação: **17/11/2026**. Grupo: Marcelo de Moura Maia Júnior, 
 
 **Ponto de parada 1:** mostrar o resumo (quantas de confiança alta/média/baixa) e a lista curta de dúvidas reais para o Marcelo decidir. Propor o commit.
 
-## Fase 2 — Lógica do aparelho (31/10 – 02/11)
+## Fase 2 — Lógica do aparelho (31/10 – 02/11) — concluída
 
 **Objetivo:** toda a regra do jogo em funções puras, testadas, sem nada de interface.
 

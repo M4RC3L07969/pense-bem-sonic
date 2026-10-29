@@ -89,7 +89,8 @@ pense-bem-sonic/
 │   ├── components/     # peças de interface reutilizáveis (botões, visor...)
 │   ├── screens/        # telas do app
 │   ├── data/           # gabarito.json: respostas de cada programa
-│   ├── logic/          # regras do jogo, sem interface (pontuação, validação do gabarito)
+│   ├── logic/          # regras do jogo, sem interface (aparelho, pontuação, sorteio, recorde, gabarito)
+│   ├── services/       # acesso ao celular (recordes salvos com AsyncStorage)
 │   └── theme/          # cores, fontes e espaçamentos
 └── __tests__/          # testes automatizados (Jest)
 ```
@@ -116,9 +117,10 @@ O `numero` segue a numeração do livro (1 a 150) e a `resposta` é uma das core
 - [x] Repositório e projeto Expo criados
 - [x] Regras de pontuação e validação do gabarito, com testes
 - [x] Gabarito dos programas 021 a 025 (em cores, com revisão em `docs/gabarito-revisao.md`)
-- [ ] Tela de escolha do programa (digitar o código)
-- [ ] Tela de pergunta com as 4 alternativas e 3 tentativas
-- [ ] Contagem de pontos e tela de resultado
+- [x] Lógica do aparelho (teclas, 3 tentativas, Programa 6 sorteado, recorde), com testes
+- [ ] Visual do aparelho (visor e teclas)
+- [ ] Aparelho funcionando de ponta a ponta
+- [ ] Sons, animações e recorde na tela
 - [ ] Versão no Expo Snack para a entrega
 
 ## Entrega
