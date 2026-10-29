@@ -21,6 +21,6 @@
       "favicon": "./assets/favicon.png"
     },
     "description": "Jogo de perguntas do Pense Bem com o livro 'Uma Aventura Científica com Sonic'.",
-    "plugins": ["expo-font"]
+    "plugins": ["expo-font", "expo-asset"]
   }
 }

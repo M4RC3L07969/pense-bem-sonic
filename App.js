@@ -1,18 +1,12 @@
 /**
  * Componente raiz: carrega as fontes e mostra o aparelho.
- *
- * Por enquanto o aparelho fica parado (as teclas ainda não mudam o visor); a Fase 4 liga
- * o teclado às regras do jogo.
  */
 
 import { useFonts } from 'expo-font';
 import { StatusBar } from 'expo-status-bar';
-import { ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { Carcaca } from './src/components/carcaca';
-import { Teclado } from './src/components/teclado';
-import { Visor } from './src/components/visor';
-import { TEMA } from './src/theme';
+import { Aparelho } from './src/screens/aparelho';
 import { FONTES } from './src/theme/fontes';
 
 /**
@@ -28,27 +22,9 @@ export default function App() {
   }
 
   return (
-    <ScrollView
-      style={styles.fundo}
-      contentContainerStyle={styles.conteudo}
-      contentInsetAdjustmentBehavior="automatic"
-    >
+    <SafeAreaProvider>
       <StatusBar style="light" />
-      <Carcaca>
-        <Visor texto="---" legenda="digite o código do programa" />
-        <Teclado onAcao={() => {}} />
-      </Carcaca>
-    </ScrollView>
+      <Aparelho />
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  fundo: { backgroundColor: TEMA.cores.fundo },
-  conteudo: {
-    flexGrow: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 24,
-  },
-});
