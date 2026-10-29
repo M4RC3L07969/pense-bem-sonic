@@ -96,12 +96,15 @@ Entrega e apresentação: **17/11/2026**. Grupo: Marcelo de Moura Maia Júnior, 
 
 **Ponto de parada 4:** o Marcelo testa no iPhone. Propor o commit.
 
-## Fase 5 — Extras (08/11 – 11/11)
+## Fase 5 — Extras (08/11 – 11/11) — concluída
 
-1. **Sons:** gerar bipes próprios (ondas simples criadas por script, sem direitos autorais) em `assets/sons/`; tocar com `expo-audio` (instalar com `npx expo install`). Testar no Snack; se não funcionar lá, o app segue sem som.
-2. **Animações** (`Animated`): visor pisca no acerto/erro, tecla afunda ao tocar, revelação da cor certa pisca a tecla correta.
-3. **Recorde:** mostrar no visor ao entrar no programa e na tela de resultado; avisar "novo recorde".
-4. Testes do que for lógica; screenshots do resto; Snack.
+**Objetivo:** sons, animações e recorde no visor. Decisões do Marcelo: bipe em toda tecla e um botão para ligar e desligar o som.
+
+1. **Sons:** criados do zero por `scripts/gerar-sons.js` (`npm run sons`), com ondas simples, em `assets/sons/` (tecla, acerto, erro, revelada, fim, recorde). Tocados com `expo-audio` por `src/services/sons.js`, que nunca dá erro. A escolha de qual som toca em cada mudança fica em `src/logic/sons.js` (`somDaMudanca`). As teclas coloridas não fazem bipe: o som delas é o de acerto ou erro. O som segue o modo silencioso do celular.
+2. **Botão de som** (`tecla-som.js`), no pé do aparelho, com uma luz amarela quando está ligado. A escolha fica salva (`carregarSomLigado` / `salvarSomLigado`).
+3. **Animações** (`src/components/animacoes.js`, com `Animated`): o aviso entra com um pulo, os dígitos piscam no erro (2 vezes) e no acerto (1 vez), a tecla da cor certa pulsa e o "novo recorde" pisca. Com "Reduzir movimento" ligado no celular, nada se mexe.
+4. **Recorde no visor:** ao digitar o código de um programa que já tem recorde, aparece "recorde: X" antes do `ENTER`.
+5. Testado: Jest (sons de cada momento, botão de som, preferência salva, WAVs válidos, recorde no código); navegador (Playwright) conferindo cada som tocado e as animações em capturas; a mesma coisa numa cópia no SDK 55. O teste no próprio Snack fica para a Fase 6, porque o Chrome do PC não estava conectado.
 
 **Ponto de parada 5:** o Marcelo testa no iPhone. Propor o commit.
 
@@ -115,13 +118,13 @@ Entrega e apresentação: **17/11/2026**. Grupo: Marcelo de Moura Maia Júnior, 
 
 ## Riscos
 
-| Risco                                        | Plano                                                                                |
-| -------------------------------------------- | ------------------------------------------------------------------------------------ |
-| Resposta errada no gabarito                  | Conferência dupla + dúvidas levadas ao Marcelo; testes garantem formato e sequência. |
-| Algo do SDK 58 não rodar no Snack (SDK 55)   | Testar no Snack ao fim das fases 2, 4 e 5; evitar bibliotecas extras.                |
-| Som ou AsyncStorage não funcionarem no Snack | Testar cedo; app funciona sem som e sem recorde.                                     |
-| Import do repositório no Snack falhou        | "Import files" testado e funcionando na fase 4 (com as pastas); usar na fase 6.      |
-| RAs do grupo                                 | Marcelo envia antes da fase 6.                                                       |
+| Risco                                        | Plano                                                                                   |
+| -------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Resposta errada no gabarito                  | Conferência dupla + dúvidas levadas ao Marcelo; testes garantem formato e sequência.    |
+| Algo do SDK 58 não rodar no Snack (SDK 55)   | Testar no Snack ao fim das fases 2, 4 e 5; evitar bibliotecas extras.                   |
+| Som ou AsyncStorage não funcionarem no Snack | AsyncStorage testado; o som ainda falta testar no Snack. O app funciona mudo se falhar. |
+| Import do repositório no Snack falhou        | "Import files" testado e funcionando na fase 4 (com as pastas); usar na fase 6.         |
+| RAs do grupo                                 | Marcelo envia antes da fase 6.                                                          |
 
 ## Pendências do Marcelo
 

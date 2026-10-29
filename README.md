@@ -33,6 +33,7 @@ No app:
 - Depois de cada resposta, o visor avisa se acertou (com os pontos) ou errou. Se errar as três, mostra a cor certa e destaca a tecla dela.
 - No resultado, `ENTER` joga o mesmo programa de novo e `LIVRO` troca de programa. O melhor resultado de cada programa fica salvo no aparelho.
 - No navegador do computador, também dá para usar o teclado: números, `Enter`, `Backspace` (apagar) e `Esc` (LIVRO).
+- O botão **SOM**, no pé do aparelho, liga e desliga os sons. O som segue o modo silencioso do celular.
 
 ## Como rodar
 
@@ -79,7 +80,8 @@ Falta o login no terminal. Veja o primeiro item desta seção.
 | Comando                | O que faz                                                 |
 | ---------------------- | --------------------------------------------------------- |
 | `npm start`            | Abre o app (Expo)                                         |
-| `npm test`             | Roda os testes (pontuação e gabarito)                     |
+| `npm test`             | Roda os testes automáticos                                |
+| `npm run sons`         | Gera de novo os sons em `assets/sons/`                    |
 | `npm run lint`         | Procura erros e maus hábitos no código (ESLint)           |
 | `npm run format`       | Formata todos os arquivos no padrão do projeto (Prettier) |
 | `npm run format:check` | Só confere a formatação, sem alterar nada                 |
@@ -91,7 +93,8 @@ pense-bem-sonic/
 ├── App.js              # componente raiz (fica na raiz por causa do Expo Snack)
 ├── index.js            # ponto de entrada (registra o App no Expo)
 ├── app.json            # configuração do Expo (nome, ícone, splash)
-├── assets/             # ícones e imagens do app
+├── assets/             # ícones, imagens e os sons do app (assets/sons/)
+├── scripts/            # gerar-sons.js: cria os sons do zero (npm run sons)
 ├── src/
 │   ├── components/     # peças do aparelho: carcaça, visor, dígito, teclas e teclado
 │   ├── screens/        # a tela do aparelho (liga o teclado às regras e salva os recordes)
@@ -125,7 +128,7 @@ O `numero` segue a numeração do livro (1 a 150) e a `resposta` é uma das core
 - [x] Lógica do aparelho (teclas, 3 tentativas, Programa 6 sorteado, recorde), com testes
 - [x] Visual do aparelho (visor e teclas)
 - [x] Aparelho funcionando de ponta a ponta
-- [ ] Sons, animações e recorde na tela
+- [x] Sons, animações e recorde na tela
 - [ ] Versão no Expo Snack para a entrega
 
 ## Entrega
