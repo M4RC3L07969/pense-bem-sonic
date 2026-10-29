@@ -86,16 +86,15 @@ pense-bem-sonic/
 ├── app.json            # configuração do Expo (nome, ícone, splash)
 ├── assets/             # ícones e imagens do app
 ├── src/
-│   ├── components/     # peças de interface reutilizáveis (botões, visor...)
-│   ├── screens/        # telas do app
+│   ├── components/     # peças do aparelho: carcaça, visor, dígito, teclas e teclado
 │   ├── data/           # gabarito.json: respostas de cada programa
 │   ├── logic/          # regras do jogo, sem interface (aparelho, pontuação, sorteio, recorde, gabarito)
 │   ├── services/       # acesso ao celular (recordes salvos com AsyncStorage)
-│   └── theme/          # cores, fontes e espaçamentos
+│   └── theme/          # tema "Turbo": cores, fontes, formas e conferência de contraste
 └── __tests__/          # testes automatizados (Jest)
 ```
 
-As pastas `components`, `screens` e `theme` são criadas quando o primeiro arquivo delas for escrito.
+A pasta `src/screens/` (a tela do aparelho) entra na próxima etapa.
 
 ### Formato do gabarito
 
@@ -118,7 +117,7 @@ O `numero` segue a numeração do livro (1 a 150) e a `resposta` é uma das core
 - [x] Regras de pontuação e validação do gabarito, com testes
 - [x] Gabarito dos programas 021 a 025 (em cores, com revisão em `docs/gabarito-revisao.md`)
 - [x] Lógica do aparelho (teclas, 3 tentativas, Programa 6 sorteado, recorde), com testes
-- [ ] Visual do aparelho (visor e teclas)
+- [x] Visual do aparelho (visor e teclas)
 - [ ] Aparelho funcionando de ponta a ponta
 - [ ] Sons, animações e recorde na tela
 - [ ] Versão no Expo Snack para a entrega

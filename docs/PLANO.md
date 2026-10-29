@@ -29,6 +29,7 @@ Entrega e apresentação: **17/11/2026**. Grupo: Marcelo de Moura Maia Júnior, 
 | Teclas      | `LIVRO` recomeça na hora, em qualquer momento. Erro com tentativas sobrando: o visor avisa e repete a pergunta. No resultado, `ENTER` joga o mesmo programa de novo (o `026` com novo sorteio) e `LIVRO` troca de programa. |
 | Telas       | Uma tela só (o aparelho); o que muda é o estado. Sem Expo Router.                                                                                                                                                           |
 | Versão      | Projeto no SDK 58; entrega no Snack (SDK 55). Usar `Animated` do React Native, não Reanimated.                                                                                                                              |
+| Visual      | Tema **Turbo**: carcaça azul, detalhes amarelos, letras inclinadas e visor verde-claro de LCD. Fontes Russo One e Exo 2.                                                                                                    |
 
 ## Fase 1 — Gabarito (29/10 – 31/10) — concluída
 
@@ -63,20 +64,21 @@ Entrega e apresentação: **17/11/2026**. Grupo: Marcelo de Moura Maia Júnior, 
 
 **Ponto de parada 2:** resumo dos testes e de qualquer decisão de regra que surgiu. Propor o commit.
 
-## Fase 3 — Visual (02/11 – 05/11)
+## Fase 3 — Visual (02/11 – 05/11) — concluída
 
 **Objetivo:** identidade visual escolhida pelo Marcelo e componentes prontos.
 
 1. Carregar as skills `frontend-design` e `expo-native-ui`.
-2. Criar **3 propostas** de visual do aparelho (direções diferentes de cor, forma e tipografia), renderizadas como imagens a partir do próprio app no navegador.
-3. **Ponto de parada 3a:** o Marcelo escolhe uma proposta (ou pede ajustes).
-4. `src/theme/index.js`: tokens de cor (incluindo as 4 cores das teclas, com contraste conferido), tipografia, espaçamento, raios e sombras.
+2. Criar **3 propostas** de visual do aparelho (Turbo, Laboratório do Dr. K e Cartucho 16 bits), renderizadas como imagens a partir do próprio app no navegador.
+3. **Ponto de parada 3a:** o Marcelo escolheu a **Turbo**.
+4. `src/theme/index.js` (`TEMA`): cores (incluindo as 4 cores das teclas, com contraste conferido nos testes), fontes, raios, bordas e sombras. `src/theme/fontes.js` lista as fontes do Google Fonts que o app carrega (Russo One e Exo 2).
 5. Componentes em `src/components/`:
-   - `Visor` — visor estilo LCD; dígitos de 7 segmentos desenhados com `View` (sem depender de fonte externa).
-   - `Tecla` — tecla genérica (número, `LIVRO`, `ENTER`, `APAGAR`).
-   - `TeclaCor` — tecla colorida de resposta.
-   - `Teclado` — organiza as teclas.
-6. Conferir em larguras de iPhone pequeno e grande e no navegador.
+   - `visor.js` — visor estilo LCD; dígitos de 7 segmentos desenhados com `View` (`digito.js` e `sete-segmentos.js`), sem depender de fonte.
+   - `tecla.js` — tecla genérica (número, `LIVRO`, `ENTER`, `APAGAR`), que afunda ao tocar.
+   - `tecla-cor.js` — tecla colorida de resposta, com o nome da cor em letra pequena.
+   - `teclado.js` — organiza as teclas e envia as ações no formato de `ACOES`.
+   - `carcaca.js` — corpo do aparelho, título e as faixas de velocidade.
+6. Conferido em iPhone pequeno (375×667), médio (390×844) e grande (430×932) no navegador, e numa cópia do app no SDK 55 (mesmo resultado).
 
 **Ponto de parada 3b:** screenshots dos componentes. Propor o commit.
 
@@ -84,7 +86,7 @@ Entrega e apresentação: **17/11/2026**. Grupo: Marcelo de Moura Maia Júnior, 
 
 **Objetivo:** jogo completo de ponta a ponta.
 
-1. `src/screens/Aparelho.js`: `useReducer(reduzir)`, desenha o estado no `Visor`, envia as teclas; temporizadores para `AVANCAR` (limpos ao desmontar a tela).
+1. `src/screens/aparelho.js`: `useReducer(reduzir)`, desenha o estado no `Visor`, envia as teclas; temporizadores para `AVANCAR` (limpos ao desmontar a tela).
 2. `App.js` passa a só mostrar a tela `Aparelho`.
 3. O visor mostra: número da pergunta (numeração do livro), tentativa atual, acerto/erro, pontos no fim.
 4. Teste automatizado no navegador (Playwright): jogar um programa inteiro clicando nas teclas e conferir o total.
@@ -121,8 +123,8 @@ Entrega e apresentação: **17/11/2026**. Grupo: Marcelo de Moura Maia Júnior, 
 
 ## Pendências do Marcelo
 
-- [ ] Aprovar este plano.
+- [x] Aprovar este plano.
 - [ ] Enviar os RAs dos três integrantes (até a fase 6).
-- [ ] Decidir as dúvidas do gabarito (ponto de parada 1).
-- [ ] Escolher o visual (ponto de parada 3a).
+- [x] Decidir as dúvidas do gabarito (ponto de parada 1).
+- [x] Escolher o visual (ponto de parada 3a).
 - [ ] Testar no iPhone (pontos de parada 4 e 5).
