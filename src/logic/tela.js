@@ -20,6 +20,14 @@ const AVISOS_DE_CODIGO = Object.freeze({
   [ERROS_DE_CODIGO.INVALIDO]: 'código inválido',
 });
 
+function avisoDoCodigo(estado) {
+  if (estado.erroCodigo) {
+    return { texto: AVISOS_DE_CODIGO[estado.erroCodigo], tom: 'erro' };
+  }
+  const recorde = estado.recordes[estado.digitos];
+  return recorde === undefined ? null : { texto: `recorde: ${recorde}`, tom: 'neutro' };
+}
+
 function visorDaPergunta(estado, aviso) {
   const { codigo, perguntas } = estado.programa;
   return {
@@ -63,9 +71,7 @@ export function visorDoEstado(estado) {
           texto: estado.digitos,
           legenda: 'código do programa',
           tentativa: null,
-          aviso: estado.erroCodigo
-            ? { texto: AVISOS_DE_CODIGO[estado.erroCodigo], tom: 'erro' }
-            : null,
+          aviso: avisoDoCodigo(estado),
         },
         corDestacada: null,
       };
