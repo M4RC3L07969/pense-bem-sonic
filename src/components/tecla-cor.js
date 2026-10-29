@@ -2,9 +2,10 @@
  * Tecla de resposta: uma das 4 cores, com o nome da cor em letra pequena.
  */
 
-import { Pressable, StyleSheet, Text, useWindowDimensions } from 'react-native';
+import { Animated, Pressable, StyleSheet, Text, useWindowDimensions } from 'react-native';
 
 import { TEMA } from '../theme';
+import { usePulsar } from './animacoes';
 
 const { cores, fontes, formas } = TEMA;
 
@@ -20,31 +21,39 @@ const { cores, fontes, formas } = TEMA;
  */
 export function TeclaCor({ cor, onPress, destacada = false, apagada = false }) {
   const estreita = useWindowDimensions().width < TEMA.larguraDeTelaEstreita;
+  const escala = usePulsar(destacada);
 
   return (
-    <Pressable
-      onPress={onPress}
-      accessibilityRole="button"
-      accessibilityLabel={`responder ${cor}`}
-      accessibilityState={{ selected: destacada }}
-      style={({ pressed }) => [
-        styles.tecla,
-        { backgroundColor: cores.resposta[cor] },
-        destacada && styles.destacada,
-        apagada && styles.apagada,
-        pressed && styles.apertada,
-      ]}
-    >
-      <Text
-        style={[styles.nome, estreita && styles.nomeEstreito, { color: cores.respostaTexto[cor] }]}
+    <Animated.View style={[styles.moldura, { transform: [{ scale: escala }] }]}>
+      <Pressable
+        onPress={onPress}
+        accessibilityRole="button"
+        accessibilityLabel={`responder ${cor}`}
+        aria-selected={destacada}
+        style={({ pressed }) => [
+          styles.tecla,
+          { backgroundColor: cores.resposta[cor] },
+          destacada && styles.destacada,
+          apagada && styles.apagada,
+          pressed && styles.apertada,
+        ]}
       >
-        {cor}
-      </Text>
-    </Pressable>
+        <Text
+          style={[
+            styles.nome,
+            estreita && styles.nomeEstreito,
+            { color: cores.respostaTexto[cor] },
+          ]}
+        >
+          {cor}
+        </Text>
+      </Pressable>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
+  moldura: { flex: 1 },
   tecla: {
     flex: 1,
     minHeight: 72,
@@ -56,7 +65,7 @@ const styles = StyleSheet.create({
     borderRadius: formas.raioTeclaCor,
     boxShadow: formas.sombraTecla,
   },
-  destacada: { borderWidth: formas.bordaTeclaCorDestacada, transform: [{ scale: 1.08 }] },
+  destacada: { borderWidth: formas.bordaTeclaCorDestacada },
   apagada: { opacity: 0.35 },
   apertada: {
     boxShadow: formas.sombraTeclaApertada,

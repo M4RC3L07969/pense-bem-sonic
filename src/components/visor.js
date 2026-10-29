@@ -4,13 +4,16 @@
  * Componente só de apresentação: recebe o que mostrar e não conhece as regras do jogo.
  */
 
-import { StyleSheet, Text, View } from 'react-native';
+import { Animated, StyleSheet, Text, View } from 'react-native';
 
 import { TEMA } from '../theme';
+import { usePiscar, usePulo } from './animacoes';
 import { Digito } from './digito';
 
 const { cores, fontes, formas } = TEMA;
 const CASAS = 3;
+const PISCADAS_DOS_DIGITOS = Object.freeze({ acerto: 1, erro: 2 });
+const PISCADAS_DO_AVISO = Object.freeze({ destaque: 3 });
 
 function Marcador({ ativo, usado }) {
   return (
@@ -36,12 +39,20 @@ function coresDoAviso(tom) {
   return { fundo: 'transparent', texto: cores.visorTexto };
 }
 
-function Aviso({ texto, tom }) {
+function Aviso({ texto, tom, chave }) {
   const { fundo, texto: corDoTexto } = coresDoAviso(tom);
+  const escala = usePulo(chave);
+  const opacidade = usePiscar(chave, PISCADAS_DO_AVISO[tom] ?? 0);
   return (
-    <View style={[styles.aviso, { backgroundColor: fundo }, tom === 'neutro' && styles.neutro]}>
+    <Animated.View
+      style={[
+        styles.aviso,
+        { backgroundColor: fundo, opacity: opacidade, transform: [{ scale: escala }] },
+        tom === 'neutro' && styles.neutro,
+      ]}
+    >
       <Text style={[styles.textoAviso, { color: corDoTexto }]}>{texto}</Text>
-    </View>
+    </Animated.View>
   );
 }
 
@@ -59,6 +70,8 @@ function Aviso({ texto, tom }) {
  */
 export function Visor({ texto = '', legenda, tentativa = null, maxTentativas = 3, aviso = null }) {
   const casas = texto.slice(-CASAS).padStart(CASAS, ' ').split('');
+  const chave = aviso ? `${texto}|${tentativa}|${aviso.texto}` : null;
+  const opacidadeDosDigitos = usePiscar(chave, PISCADAS_DOS_DIGITOS[aviso?.tom] ?? 0);
   const descricao = [[legenda, texto.trim()].filter(Boolean).join(': '), aviso?.texto]
     .filter(Boolean)
     .join('. ');
@@ -86,14 +99,14 @@ export function Visor({ texto = '', legenda, tentativa = null, maxTentativas = 3
         )}
       </View>
 
-      <View style={styles.digitos}>
+      <Animated.View style={[styles.digitos, { opacity: opacidadeDosDigitos }]}>
         {casas.map((caractere, indice) => (
           <Digito key={indice} caractere={caractere} />
         ))}
-      </View>
+      </Animated.View>
 
       <View style={[styles.linha, styles.rodape]}>
-        {aviso && <Aviso texto={aviso.texto} tom={aviso.tom} />}
+        {aviso && <Aviso texto={aviso.texto} tom={aviso.tom} chave={chave} />}
       </View>
     </View>
   );
