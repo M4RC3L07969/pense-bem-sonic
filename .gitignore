@@ -54,3 +54,7 @@ desktop.ini
 
 # material de referência local (PDF do livro, scans) — protegido por direitos autorais, não versionar
 /referencias/
+
+# Claude Code: skills e configurações locais (ficam só na máquina, não vão pro GitHub)
+.claude/skills/
+.claude/settings.local.json
