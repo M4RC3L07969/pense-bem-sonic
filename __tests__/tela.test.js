@@ -55,6 +55,18 @@ describe('visorDoEstado', () => {
     expect(visor.aviso).toEqual({ texto: 'código inválido', tom: 'erro' });
   });
 
+  test('ao digitar um código que já tem recorde, mostra o recorde', () => {
+    const comRecorde = jogar([{ tipo: ACOES.RECORDES_CARREGADOS, recordes: { '021': 87 } }]);
+    expect(visorDoEstado(jogar(codigo021.slice(0, -1), comRecorde)).visor.aviso).toEqual({
+      texto: 'recorde: 87',
+      tom: 'neutro',
+    });
+    expect(visorDoEstado(jogar([livro, digito(0), digito(2)], comRecorde)).visor.aviso).toBeNull();
+    expect(
+      visorDoEstado(jogar([livro, digito(0), digito(2), digito(2)], comRecorde)).visor.aviso,
+    ).toBeNull();
+  });
+
   test('na pergunta, mostra o número do livro, o programa e a tentativa', () => {
     const estado = jogar([...codigo021, cor(respostaDa(0)), avancar]);
     expect(visorDoEstado(estado)).toEqual({

@@ -2,9 +2,12 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
+  CHAVE_DO_SOM,
   CHAVE_DOS_RECORDES,
   carregarRecordes,
+  carregarSomLigado,
   salvarRecordes,
+  salvarSomLigado,
 } from '../src/services/armazenamento';
 
 jest.mock('@react-native-async-storage/async-storage', () =>
@@ -52,5 +55,41 @@ describe('armazenamento dos recordes', () => {
   it('erro ao gravar devolve false', async () => {
     jest.spyOn(AsyncStorage, 'setItem').mockRejectedValueOnce(new Error('sem espaço'));
     expect(await salvarRecordes({ '021': 72 })).toBe(false);
+  });
+});
+
+describe('preferência do som', () => {
+  it('sem nada salvo, o som começa ligado', async () => {
+    expect(await carregarSomLigado()).toBe(true);
+  });
+
+  it('salva desligado e carrega de volta', async () => {
+    expect(await salvarSomLigado(false)).toBe(true);
+    expect(await AsyncStorage.getItem(CHAVE_DO_SOM)).toBe('desligado');
+    expect(await carregarSomLigado()).toBe(false);
+    await salvarSomLigado(true);
+    expect(await carregarSomLigado()).toBe(true);
+  });
+
+  it('valor desconhecido conta como ligado', async () => {
+    await AsyncStorage.setItem(CHAVE_DO_SOM, 'talvez');
+    expect(await carregarSomLigado()).toBe(true);
+  });
+
+  it('erro ao ler deixa o som ligado', async () => {
+    await salvarSomLigado(false);
+    jest.spyOn(AsyncStorage, 'getItem').mockRejectedValueOnce(new Error('sem armazenamento'));
+    expect(await carregarSomLigado()).toBe(true);
+  });
+
+  it('erro ao gravar devolve false', async () => {
+    jest.spyOn(AsyncStorage, 'setItem').mockRejectedValueOnce(new Error('sem espaço'));
+    expect(await salvarSomLigado(false)).toBe(false);
+  });
+
+  it('não mistura com os recordes', async () => {
+    await salvarRecordes({ '021': 72 });
+    await salvarSomLigado(false);
+    expect(await carregarRecordes()).toEqual({ '021': 72 });
   });
 });

@@ -6,11 +6,27 @@ import gabarito from '../src/data/gabarito.json';
 import { CORES } from '../src/logic/gabarito';
 import { TEMPOS_DE_AVISO } from '../src/logic/tela';
 import { Aparelho } from '../src/screens/aparelho';
-import { CHAVE_DOS_RECORDES } from '../src/services/armazenamento';
+import { CHAVE_DO_SOM, CHAVE_DOS_RECORDES } from '../src/services/armazenamento';
+
+const { __tocados: tocados } = require('expo-audio');
+const sonsTocados = () => [...tocados];
 
 jest.mock('@react-native-async-storage/async-storage', () =>
   require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
 );
+jest.mock('expo-audio', () => {
+  const ordem = ['tecla', 'acerto', 'erro', 'revelada', 'fim', 'recorde'];
+  const tocados = [];
+  let criados = 0;
+  return {
+    __tocados: tocados,
+    createAudioPlayer: () => {
+      const nome = ordem[criados];
+      criados += 1;
+      return { seekTo: () => Promise.resolve(), play: () => tocados.push(nome) };
+    },
+  };
+});
 jest.mock(
   'react-native-safe-area-context',
   () => require('react-native-safe-area-context/jest/mock').default,
@@ -58,6 +74,7 @@ async function errarTudo() {
 beforeEach(async () => {
   jest.useFakeTimers();
   await AsyncStorage.clear();
+  tocados.length = 0;
 });
 
 afterEach(() => {
@@ -139,5 +156,58 @@ describe('Aparelho', () => {
     await esperar(TEMPOS_DE_AVISO.erro);
     await apertar(`responder ${PERGUNTAS_021[0].resposta}`);
     expect(screen.getByLabelText(/acertou! \+2/)).toBeTruthy();
+  });
+
+  test('cada momento do jogo tem o seu som', async () => {
+    const [primeira, segunda] = PERGUNTAS_021;
+    await ligar();
+    await escolher021();
+    expect(sonsTocados()).toEqual(['tecla', 'tecla', 'tecla', 'tecla', 'tecla']);
+
+    tocados.length = 0;
+    await apertar(`responder ${primeira.resposta}`);
+    expect(sonsTocados()).toEqual(['acerto']);
+    await esperar(TEMPOS_DE_AVISO.acerto);
+
+    tocados.length = 0;
+    const errada = `responder ${corErrada(segunda.resposta)}`;
+    await apertar(errada);
+    await esperar(TEMPOS_DE_AVISO.erro);
+    await apertar(errada);
+    await esperar(TEMPOS_DE_AVISO.erro);
+    await apertar(errada);
+    expect(sonsTocados()).toEqual(['erro', 'erro', 'revelada']);
+  });
+
+  test('no fim toca o som do recorde', async () => {
+    await ligar();
+    await escolher021();
+    for (const { resposta } of PERGUNTAS_021) {
+      await apertar(`responder ${resposta}`);
+      await esperar(TEMPOS_DE_AVISO.acerto);
+    }
+    expect(sonsTocados().at(-1)).toBe('recorde');
+  });
+
+  test('o botão de som desliga tudo e a escolha fica salva', async () => {
+    await ligar();
+    const botao = screen.getByRole('switch', { name: 'som' });
+    expect(botao).toBeChecked();
+    await fireEvent.press(botao);
+    expect(screen.getByRole('switch', { name: 'som' })).not.toBeChecked();
+    await act(async () => {});
+    expect(await AsyncStorage.getItem(CHAVE_DO_SOM)).toBe('desligado');
+
+    await escolher021();
+    await apertar(`responder ${PERGUNTAS_021[0].resposta}`);
+    expect(sonsTocados()).toEqual([]);
+  });
+
+  test('abre com o som desligado se foi essa a escolha salva', async () => {
+    await AsyncStorage.setItem(CHAVE_DO_SOM, 'desligado');
+    await ligar();
+    expect(screen.getByRole('switch', { name: 'som' })).not.toBeChecked();
+    await apertar('livro: escolher programa');
+    expect(sonsTocados()).toEqual([]);
   });
 });
