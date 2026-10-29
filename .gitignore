@@ -58,3 +58,7 @@ desktop.ini
 # Claude Code: skills e configurações locais (ficam só na máquina, não vão pro GitHub)
 .claude/skills/
 .claude/settings.local.json
+CLAUDE.md
+
+# testes
+coverage/

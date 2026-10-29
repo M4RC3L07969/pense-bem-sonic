@@ -11,13 +11,13 @@ Feito em **React Native** com **Expo**, roda no Android, no iOS e no navegador (
 
 O livro tem 6 programas. Cada programa é aberto digitando o código dele, igual no aparelho original (`LIVRO` → código → `ENTER`):
 
-| Programa | Código | Perguntas |
-| -------- | ------ | --------- |
-| 1        | `021`  | 1 a 30    |
-| 2        | `022`  | 31 a 60   |
-| 3        | `023`  | 61 a 90   |
-| 4        | `024`  | 91 a 120  |
-| 5        | `025`  | 121 a 150 |
+| Programa | Código | Perguntas       |
+| -------- | ------ | --------------- |
+| 1        | `021`  | 1 a 30          |
+| 2        | `022`  | 31 a 60         |
+| 3        | `023`  | 61 a 90         |
+| 4        | `024`  | 91 a 120        |
+| 5        | `025`  | 121 a 150       |
 | 6        | `026`  | avaliação geral |
 
 Regras de pontuação:
@@ -40,21 +40,55 @@ npx expo start
 
 Depois é só escanear o QR code com o Expo Go (Android) ou com a câmera (iOS). Para abrir no navegador, aperte `w` no terminal.
 
+## Comandos
+
+| Comando                | O que faz                                                 |
+| ---------------------- | --------------------------------------------------------- |
+| `npm start`            | Abre o app (Expo)                                         |
+| `npm test`             | Roda os testes (pontuação e gabarito)                     |
+| `npm run lint`         | Procura erros e maus hábitos no código (ESLint)           |
+| `npm run format`       | Formata todos os arquivos no padrão do projeto (Prettier) |
+| `npm run format:check` | Só confere a formatação, sem alterar nada                 |
+
 ## Estrutura
 
 ```
 pense-bem-sonic/
-├── App.js          # tela principal do app
-├── index.js        # ponto de entrada (registra o App no Expo)
-├── app.json        # configuração do Expo (nome, ícone, splash)
-├── assets/         # ícones e imagens do app
-└── package.json    # dependências e scripts
+├── App.js              # componente raiz (fica na raiz por causa do Expo Snack)
+├── index.js            # ponto de entrada (registra o App no Expo)
+├── app.json            # configuração do Expo (nome, ícone, splash)
+├── assets/             # ícones e imagens do app
+├── src/
+│   ├── components/     # peças de interface reutilizáveis (botões, visor...)
+│   ├── screens/        # telas do app
+│   ├── data/           # gabarito.json: respostas de cada programa
+│   ├── logic/          # regras do jogo, sem interface (pontuação, validação do gabarito)
+│   └── theme/          # cores, fontes e espaçamentos
+└── __tests__/          # testes automatizados (Jest)
 ```
+
+As pastas `components`, `screens` e `theme` são criadas quando o primeiro arquivo delas for escrito.
+
+### Formato do gabarito
+
+Cada programa em `src/data/gabarito.json` tem número, código, a primeira pergunta e a lista de respostas:
+
+```json
+{
+  "numero": 1,
+  "codigo": "021",
+  "primeiraPergunta": 1,
+  "perguntas": [{ "numero": 1, "resposta": "A" }]
+}
+```
+
+`enunciado` e `alternativas` (`{ "A": "...", "B": "...", "C": "...", "D": "..." }`) são opcionais. O `npm test` confere se cada programa tem 30 perguntas em sequência e se toda resposta é A, B, C ou D.
 
 ## Andamento
 
 - [x] Repositório e projeto Expo criados
-- [ ] Gabarito dos 6 programas digitado
+- [x] Regras de pontuação e validação do gabarito, com testes
+- [ ] Gabarito dos programas digitado
 - [ ] Tela de escolha do programa (digitar o código)
 - [ ] Tela de pergunta com as 4 alternativas e 3 tentativas
 - [ ] Contagem de pontos e tela de resultado
@@ -67,7 +101,7 @@ pense-bem-sonic/
 
 ## Direitos autorais
 
-Projeto acadêmico, sem fins lucrativos. *Sonic the Hedgehog* é marca registrada da SEGA. O livro *Pense Bem* é da Editora Nova Cultural / Tectoy (licenciado da VTech). O PDF e as imagens do livro **não** fazem parte deste repositório — se for guardar uma cópia local, use a pasta `referencias/`, que é ignorada pelo Git.
+Projeto acadêmico, sem fins lucrativos. _Sonic the Hedgehog_ é marca registrada da SEGA. O livro _Pense Bem_ é da Editora Nova Cultural / Tectoy (licenciado da VTech). O PDF e as imagens do livro **não** fazem parte deste repositório — se for guardar uma cópia local, use a pasta `referencias/`, que é ignorada pelo Git.
 
 ## Licença
 
