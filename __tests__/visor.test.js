@@ -9,25 +9,29 @@ describe('Visor', () => {
     expect(screen.getByLabelText('pergunta: 17')).toBeTruthy();
   });
 
+  test('o leitor de tela também lê o aviso', async () => {
+    await render(
+      <Visor texto="17" legenda="pergunta" aviso={{ texto: 'acertou! +3', tom: 'acerto' }} />,
+    );
+    expect(screen.getByLabelText('pergunta: 17. acertou! +3')).toBeTruthy();
+  });
+
   test('sem nada para mostrar, se apresenta como visor', async () => {
     await render(<Visor />);
     expect(screen.getByLabelText('visor')).toBeTruthy();
   });
 
-  test.each([
-    [{ sinal: 'acerto' }, 'acertou'],
-    [{ sinal: 'erro' }, 'errou, tente de novo'],
-    [{ corRevelada: 'azul' }, 'a certa era azul'],
-    [{ recorde: true }, 'novo recorde'],
-  ])('mostra o aviso certo para %j', async (props, aviso) => {
-    await render(<Visor texto="1" {...props} />);
-    expect(screen.getByText(aviso)).toBeTruthy();
-  });
+  test.each(['acerto', 'erro', 'destaque', 'neutro', 'vermelho', 'amarelo', 'azul', 'verde'])(
+    'mostra o aviso com o tom %s',
+    async (tom) => {
+      await render(<Visor texto="1" aviso={{ texto: 'aviso de teste', tom }} />);
+      expect(screen.getByText('aviso de teste')).toBeTruthy();
+    },
+  );
 
-  test('não mostra aviso quando não há nada a avisar', async () => {
+  test('sem aviso, não mostra texto embaixo dos dígitos', async () => {
     await render(<Visor texto="021" legenda="código do programa" />);
-    for (const aviso of ['acertou', 'errou, tente de novo', 'novo recorde']) {
-      expect(screen.queryByText(aviso)).toBeNull();
-    }
+    expect(screen.queryByText('aviso de teste')).toBeNull();
+    expect(screen.getAllByText(/./)).toHaveLength(1);
   });
 });

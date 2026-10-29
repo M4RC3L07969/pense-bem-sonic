@@ -52,4 +52,25 @@ describe('Teclado', () => {
     expect(screen.getByRole('button', { name: 'responder azul' })).toBeSelected();
     expect(screen.getByRole('button', { name: 'responder verde' })).not.toBeSelected();
   });
+
+  test('com uma cor destacada, as outras 3 ficam apagadas', async () => {
+    await montar({ corDestacada: 'azul' });
+    expect(screen.getByRole('button', { name: 'responder azul' })).not.toHaveStyle({
+      opacity: 0.35,
+    });
+    for (const cor of ['vermelho', 'amarelo', 'verde']) {
+      expect(screen.getByRole('button', { name: `responder ${cor}` })).toHaveStyle({
+        opacity: 0.35,
+      });
+    }
+  });
+
+  test('sem cor destacada, nenhuma tecla fica apagada', async () => {
+    await montar();
+    for (const cor of CORES) {
+      expect(screen.getByRole('button', { name: `responder ${cor}` })).not.toHaveStyle({
+        opacity: 0.35,
+      });
+    }
+  });
 });
