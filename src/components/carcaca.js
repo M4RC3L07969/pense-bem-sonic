@@ -4,11 +4,11 @@
  * Ao lado do título ficam três faixas amarelas de velocidade, o detalhe do tema.
  */
 
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 
 import { TEMA } from '../theme';
 
-const { cores, fontes, formas, larguraMaxima } = TEMA;
+const { cores, fontes, formas, larguraMaxima, larguraDeTelaEstreita } = TEMA;
 const LARGURAS_DAS_FAIXAS = Object.freeze([56, 42, 28]);
 
 function Faixas() {
@@ -40,16 +40,22 @@ export function Carcaca({
   titulo = 'Pense Bem',
   subtitulo = 'Uma aventura científica com Sonic',
 }) {
+  const estreita = useWindowDimensions().width < larguraDeTelaEstreita;
+
   return (
-    <View style={styles.carcaca}>
+    <View style={[styles.carcaca, estreita && styles.carcacaEstreita]}>
       <View style={styles.cabecalho}>
         <View style={styles.linhaDoTitulo}>
-          <Text accessibilityRole="header" style={styles.titulo}>
+          <Text
+            accessibilityRole="header"
+            numberOfLines={1}
+            style={[styles.titulo, estreita && styles.tituloEstreito]}
+          >
             {titulo}
           </Text>
           <Faixas />
         </View>
-        <Text style={styles.subtitulo}>{subtitulo}</Text>
+        <Text style={[styles.subtitulo, estreita && styles.subtituloEstreito]}>{subtitulo}</Text>
       </View>
       {children}
     </View>
@@ -70,6 +76,7 @@ const styles = StyleSheet.create({
     gap: 18,
     overflow: 'hidden',
   },
+  carcacaEstreita: { paddingHorizontal: 14 },
   cabecalho: { gap: 2 },
   linhaDoTitulo: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   titulo: {
@@ -80,7 +87,9 @@ const styles = StyleSheet.create({
     lineHeight: 40,
     transform: [{ skewX: formas.inclinacaoTitulo }],
   },
+  tituloEstreito: { fontSize: 28, lineHeight: 34 },
   subtitulo: { color: cores.carcacaTextoSuave, fontFamily: fontes.texto, fontSize: 15 },
+  subtituloEstreito: { fontSize: 13 },
   faixas: { alignItems: 'flex-end', gap: 6 },
   faixa: { height: 8, backgroundColor: cores.detalhe, transform: [{ skewX: '-30deg' }] },
 });

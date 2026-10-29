@@ -20,10 +20,27 @@ function Marcador({ ativo, usado }) {
   );
 }
 
-function Selo({ texto, fundo, cor }) {
+function coresDoAviso(tom) {
+  if (tom === 'acerto') {
+    return { fundo: cores.acerto, texto: cores.sinalTexto };
+  }
+  if (tom === 'erro') {
+    return { fundo: cores.erro, texto: cores.sinalTexto };
+  }
+  if (tom === 'destaque') {
+    return { fundo: cores.detalhe, texto: cores.teclaConfirmarTexto };
+  }
+  if (Object.hasOwn(cores.resposta, tom)) {
+    return { fundo: cores.resposta[tom], texto: cores.respostaTexto[tom] };
+  }
+  return { fundo: 'transparent', texto: cores.visorTexto };
+}
+
+function Aviso({ texto, tom }) {
+  const { fundo, texto: corDoTexto } = coresDoAviso(tom);
   return (
-    <View style={[styles.selo, { backgroundColor: fundo }]}>
-      <Text style={[styles.textoSelo, { color: cor }]}>{texto}</Text>
+    <View style={[styles.aviso, { backgroundColor: fundo }, tom === 'neutro' && styles.neutro]}>
+      <Text style={[styles.textoAviso, { color: corDoTexto }]}>{texto}</Text>
     </View>
   );
 }
@@ -36,28 +53,22 @@ function Selo({ texto, fundo, cor }) {
  * @param {string} [props.legenda] Texto pequeno em cima, dizendo o que os dígitos significam.
  * @param {number | null} [props.tentativa] Tentativa atual (1 a `maxTentativas`), ou `null` para esconder.
  * @param {number} [props.maxTentativas] Quantas tentativas existem.
- * @param {'acerto' | 'erro' | null} [props.sinal] Aviso da última jogada.
- * @param {string | null} [props.corRevelada] Cor certa a mostrar depois de 3 erros.
- * @param {boolean} [props.recorde] Se mostra o aviso de novo recorde.
+ * @param {{ texto: string, tom: string } | null} [props.aviso] Aviso embaixo dos dígitos. `tom`:
+ *   `acerto`, `erro`, `destaque`, `neutro` (só contorno) ou uma das 4 cores de resposta.
  * @returns {JSX.Element}
  */
-export function Visor({
-  texto = '',
-  legenda,
-  tentativa = null,
-  maxTentativas = 3,
-  sinal = null,
-  corRevelada = null,
-  recorde = false,
-}) {
+export function Visor({ texto = '', legenda, tentativa = null, maxTentativas = 3, aviso = null }) {
   const casas = texto.slice(-CASAS).padStart(CASAS, ' ').split('');
-  const descricao = [legenda, texto.trim()].filter(Boolean).join(': ');
+  const descricao = [[legenda, texto.trim()].filter(Boolean).join(': '), aviso?.texto]
+    .filter(Boolean)
+    .join('. ');
 
   return (
     <View
       accessible
       accessibilityRole="text"
       accessibilityLabel={descricao || 'visor'}
+      accessibilityLiveRegion="polite"
       style={styles.visor}
     >
       <View style={styles.linha}>
@@ -82,20 +93,7 @@ export function Visor({
       </View>
 
       <View style={[styles.linha, styles.rodape]}>
-        {sinal === 'acerto' && <Selo texto="acertou" fundo={cores.acerto} cor={cores.sinalTexto} />}
-        {sinal === 'erro' && (
-          <Selo texto="errou, tente de novo" fundo={cores.erro} cor={cores.sinalTexto} />
-        )}
-        {corRevelada && (
-          <Selo
-            texto={`a certa era ${corRevelada}`}
-            fundo={cores.resposta[corRevelada]}
-            cor={cores.respostaTexto[corRevelada]}
-          />
-        )}
-        {recorde && (
-          <Selo texto="novo recorde" fundo={cores.detalhe} cor={cores.teclaConfirmarTexto} />
-        )}
+        {aviso && <Aviso texto={aviso.texto} tom={aviso.tom} />}
       </View>
     </View>
   );
@@ -131,6 +129,7 @@ const styles = StyleSheet.create({
   marcadorCheio: { backgroundColor: cores.visorAceso },
   usado: { opacity: 0.45 },
   digitos: { flexDirection: 'row', justifyContent: 'flex-end', gap: 12, paddingRight: 4 },
-  selo: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: formas.raioSelo },
-  textoSelo: { fontFamily: fontes.texto, fontSize: 13 },
+  aviso: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: formas.raioSelo },
+  neutro: { borderWidth: 2, borderColor: cores.visorTexto, paddingVertical: 2 },
+  textoAviso: { fontFamily: fontes.texto, fontSize: 13 },
 });

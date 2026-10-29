@@ -66,6 +66,7 @@ export function Teclado({ onAcao, corDestacada = null }) {
             key={cor}
             cor={cor}
             destacada={cor === corDestacada}
+            apagada={corDestacada !== null && cor !== corDestacada}
             onPress={() => onAcao({ tipo: ACOES.COR, cor })}
           />
         ))}

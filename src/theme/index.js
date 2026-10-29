@@ -69,4 +69,5 @@ export const TEMA = Object.freeze({
   }),
   digito: Object.freeze({ largura: 36, altura: 62, espessura: 8 }),
   larguraMaxima: 440,
+  larguraDeTelaEstreita: 360,
 });
