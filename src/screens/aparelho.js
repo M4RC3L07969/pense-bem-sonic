@@ -2,21 +2,30 @@
  * Tela do aparelho: liga o teclado às regras do jogo e desenha o estado no visor.
  *
  * As regras ficam em `src/logic/aparelho.js`; aqui só ficam o que depende do tempo
- * (o avanço depois de cada aviso), os recordes salvos no celular e as teclas do computador.
+ * (o avanço depois de cada aviso), os recordes e a preferência do som salvos no celular,
+ * os sons e as teclas do computador.
  */
 
-import { useEffect, useReducer } from 'react';
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { Platform, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Carcaca } from '../components/carcaca';
+import { TeclaSom } from '../components/tecla-som';
 import { Teclado } from '../components/teclado';
 import { Visor } from '../components/visor';
 import gabarito from '../data/gabarito.json';
 import { ACOES, FASES, criarAparelho } from '../logic/aparelho';
+import { SONS, somDaMudanca } from '../logic/sons';
 import { acaoDaTeclaDoPc } from '../logic/teclas-do-pc';
 import { tempoAteAvancar, visorDoEstado } from '../logic/tela';
-import { carregarRecordes, salvarRecordes } from '../services/armazenamento';
+import {
+  carregarRecordes,
+  carregarSomLigado,
+  salvarRecordes,
+  salvarSomLigado,
+} from '../services/armazenamento';
+import { prepararSons, tocar } from '../services/sons';
 import { TEMA } from '../theme';
 
 const APARELHO = criarAparelho({ gabarito });
@@ -53,6 +62,47 @@ function useAvancoAutomatico(estado, enviar) {
   }, [estado, enviar]);
 }
 
+function useSomLigado() {
+  const [ligado, setLigado] = useState(true);
+
+  useEffect(() => {
+    let ativo = true;
+    carregarSomLigado().then((salvo) => {
+      if (ativo) {
+        setLigado(salvo);
+      }
+    });
+    return () => {
+      ativo = false;
+    };
+  }, []);
+
+  const alternar = useCallback(() => {
+    setLigado((atual) => {
+      salvarSomLigado(!atual);
+      return !atual;
+    });
+  }, []);
+
+  return [ligado, alternar];
+}
+
+function useSonsDoJogo(estado, somLigado) {
+  const anterior = useRef(estado);
+
+  useEffect(() => {
+    prepararSons();
+  }, []);
+
+  useEffect(() => {
+    const som = somDaMudanca(anterior.current, estado);
+    anterior.current = estado;
+    if (som && somLigado) {
+      tocar(som);
+    }
+  }, [estado, somLigado]);
+}
+
 function useTeclasDoPc(enviar) {
   useEffect(() => {
     if (Platform.OS !== 'web' || typeof window === 'undefined') {
@@ -79,12 +129,24 @@ function useTeclasDoPc(enviar) {
  */
 export function Aparelho() {
   const [estado, enviar] = useReducer(APARELHO.reduzir, APARELHO.estadoInicial);
+  const [somLigado, alternarSom] = useSomLigado();
   const margens = useSafeAreaInsets();
   const { visor, corDestacada } = visorDoEstado(estado);
 
+  const apertar = useCallback(
+    (acao) => {
+      if (somLigado && acao.tipo !== ACOES.COR) {
+        tocar(SONS.TECLA);
+      }
+      enviar(acao);
+    },
+    [somLigado],
+  );
+
   useRecordesSalvos(estado, enviar);
   useAvancoAutomatico(estado, enviar);
-  useTeclasDoPc(enviar);
+  useSonsDoJogo(estado, somLigado);
+  useTeclasDoPc(apertar);
 
   return (
     <ScrollView
@@ -99,9 +161,9 @@ export function Aparelho() {
         },
       ]}
     >
-      <Carcaca>
+      <Carcaca rodape={<TeclaSom ligado={somLigado} onPress={alternarSom} />}>
         <Visor {...visor} />
-        <Teclado onAcao={enviar} corDestacada={corDestacada} />
+        <Teclado onAcao={apertar} corDestacada={corDestacada} />
       </Carcaca>
     </ScrollView>
   );

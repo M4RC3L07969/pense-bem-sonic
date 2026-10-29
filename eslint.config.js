@@ -6,6 +6,12 @@ module.exports = defineConfig([
   expoConfig,
   prettierRecommended,
   {
+    files: ['scripts/**/*.js'],
+    languageOptions: {
+      globals: { Buffer: 'readonly', __dirname: 'readonly', process: 'readonly' },
+    },
+  },
+  {
     ignores: ['dist/*', 'web-build/*', '.expo/*', '.claude/*', 'coverage/*'],
   },
 ]);

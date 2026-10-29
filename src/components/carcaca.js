@@ -33,12 +33,14 @@ function Faixas() {
  * @param {import('react').ReactNode} props.children Visor e teclado.
  * @param {string} [props.titulo] Nome do jogo, no alto.
  * @param {string} [props.subtitulo] Linha abaixo do título.
+ * @param {import('react').ReactNode} [props.rodape] Peça pequena no pé do aparelho (o botão de som).
  * @returns {JSX.Element}
  */
 export function Carcaca({
   children,
   titulo = 'Pense Bem',
   subtitulo = 'Uma aventura científica com Sonic',
+  rodape = null,
 }) {
   const estreita = useWindowDimensions().width < larguraDeTelaEstreita;
 
@@ -58,6 +60,7 @@ export function Carcaca({
         <Text style={[styles.subtitulo, estreita && styles.subtituloEstreito]}>{subtitulo}</Text>
       </View>
       {children}
+      {rodape && <View style={styles.rodape}>{rodape}</View>}
     </View>
   );
 }
@@ -90,6 +93,7 @@ const styles = StyleSheet.create({
   tituloEstreito: { fontSize: 28, lineHeight: 34 },
   subtitulo: { color: cores.carcacaTextoSuave, fontFamily: fontes.texto, fontSize: 15 },
   subtituloEstreito: { fontSize: 13 },
+  rodape: { flexDirection: 'row', justifyContent: 'flex-end', marginTop: -4 },
   faixas: { alignItems: 'flex-end', gap: 6 },
   faixa: { height: 8, backgroundColor: cores.detalhe, transform: [{ skewX: '-30deg' }] },
 });

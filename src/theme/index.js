@@ -33,6 +33,8 @@ export const TEMA = Object.freeze({
     teclaFuncaoTexto: '#FFFFFF',
     teclaConfirmar: AMARELO,
     teclaConfirmarTexto: AZUL_ESCURO,
+    luzAcesa: AMARELO,
+    luzApagada: '#4A5C9E',
     resposta: Object.freeze({
       vermelho: '#C8221E',
       amarelo: '#FFC400',
