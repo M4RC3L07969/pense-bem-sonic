@@ -27,6 +27,13 @@ Regras de pontuação:
 - Acertou na 1ª tentativa: **3 pontos**. Na 2ª: **2 pontos**. Na 3ª: **1 ponto**. Errou as três: **0 pontos**.
 - No fim das 30 perguntas, o app mostra o **total de pontos** (máximo de 90 por programa).
 
+No app:
+
+- Aperte `LIVRO`, digite o código (por exemplo `021`) e aperte `ENTER`. O visor mostra o número da pergunta no livro e as 3 bolinhas da tentativa.
+- Depois de cada resposta, o visor avisa se acertou (com os pontos) ou errou. Se errar as três, mostra a cor certa e destaca a tecla dela.
+- No resultado, `ENTER` joga o mesmo programa de novo e `LIVRO` troca de programa. O melhor resultado de cada programa fica salvo no aparelho.
+- No navegador do computador, também dá para usar o teclado: números, `Enter`, `Backspace` (apagar) e `Esc` (LIVRO).
+
 ## Como rodar
 
 Pré-requisitos: [Node.js](https://nodejs.org) (versão LTS) e o app **Expo Go** no celular ([Android](https://play.google.com/store/apps/details?id=host.exp.exponent) / [iOS](https://apps.apple.com/app/expo-go/id982107779)).
@@ -87,14 +94,13 @@ pense-bem-sonic/
 ├── assets/             # ícones e imagens do app
 ├── src/
 │   ├── components/     # peças do aparelho: carcaça, visor, dígito, teclas e teclado
+│   ├── screens/        # a tela do aparelho (liga o teclado às regras e salva os recordes)
 │   ├── data/           # gabarito.json: respostas de cada programa
-│   ├── logic/          # regras do jogo, sem interface (aparelho, pontuação, sorteio, recorde, gabarito)
+│   ├── logic/          # regras do jogo, sem interface (aparelho, pontuação, sorteio, recorde, gabarito, textos do visor)
 │   ├── services/       # acesso ao celular (recordes salvos com AsyncStorage)
 │   └── theme/          # tema "Turbo": cores, fontes, formas e conferência de contraste
 └── __tests__/          # testes automatizados (Jest)
 ```
-
-A pasta `src/screens/` (a tela do aparelho) entra na próxima etapa.
 
 ### Formato do gabarito
 
@@ -118,7 +124,7 @@ O `numero` segue a numeração do livro (1 a 150) e a `resposta` é uma das core
 - [x] Gabarito dos programas 021 a 025 (em cores, com revisão em `docs/gabarito-revisao.md`)
 - [x] Lógica do aparelho (teclas, 3 tentativas, Programa 6 sorteado, recorde), com testes
 - [x] Visual do aparelho (visor e teclas)
-- [ ] Aparelho funcionando de ponta a ponta
+- [x] Aparelho funcionando de ponta a ponta
 - [ ] Sons, animações e recorde na tela
 - [ ] Versão no Expo Snack para a entrega
 

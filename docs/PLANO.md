@@ -82,15 +82,17 @@ Entrega e apresentação: **17/11/2026**. Grupo: Marcelo de Moura Maia Júnior, 
 
 **Ponto de parada 3b:** screenshots dos componentes. Propor o commit.
 
-## Fase 4 — Aparelho funcionando (05/11 – 08/11)
+## Fase 4 — Aparelho funcionando (05/11 – 08/11) — concluída
 
 **Objetivo:** jogo completo de ponta a ponta.
 
-1. `src/screens/aparelho.js`: `useReducer(reduzir)`, desenha o estado no `Visor`, envia as teclas; temporizadores para `AVANCAR` (limpos ao desmontar a tela).
-2. `App.js` passa a só mostrar a tela `Aparelho`.
-3. O visor mostra: número da pergunta (numeração do livro), tentativa atual, acerto/erro, pontos no fim.
-4. Teste automatizado no navegador (Playwright): jogar um programa inteiro clicando nas teclas e conferir o total.
-5. Teste no Snack.
+1. `src/logic/tela.js`: o que o visor mostra em cada fase (`visorDoEstado`) e quanto tempo cada aviso fica na tela (`tempoAteAvancar`: acerto 0,9 s, erro 1,2 s, cor revelada 2 s). Todos os textos do visor ficam aqui.
+2. `src/screens/aparelho.js`: `useReducer(reduzir)`, avanço automático depois de cada aviso (temporizador cancelado se a fase mudar ou a tela fechar), recordes carregados ao abrir e salvos no resultado, área segura do iPhone (`react-native-safe-area-context`).
+3. Teclado do computador no navegador (`src/logic/teclas-do-pc.js`): números, `Enter` = ENTER, `Backspace` = APAGAR, `Esc` = LIVRO.
+4. Na revelação, a tecla da cor certa cresce e as outras três ficam apagadas (funciona com qualquer cor, inclusive amarelo).
+5. `App.js` só carrega as fontes e mostra a tela `Aparelho`.
+6. Testado: jogo inteiro pela tela nos testes do Jest; no navegador (Playwright) o 021 completo com erro, revelação e acerto, o recorde depois de recarregar e o 026 com 30 perguntas em ordem crescente; a mesma coisa numa cópia no SDK 55; e no próprio Snack (SDK 55), com os arquivos enviados pelo "Import files".
+7. Correções que apareceram: o `expo-asset` passou a ser instalado direto (sem ele, o carregador de fontes falharia no celular) e as fontes passaram a ser importadas pela entrada principal do pacote (o Snack não aceita o caminho por peso).
 
 **Ponto de parada 4:** o Marcelo testa no iPhone. Propor o commit.
 
@@ -118,7 +120,7 @@ Entrega e apresentação: **17/11/2026**. Grupo: Marcelo de Moura Maia Júnior, 
 | Resposta errada no gabarito                  | Conferência dupla + dúvidas levadas ao Marcelo; testes garantem formato e sequência. |
 | Algo do SDK 58 não rodar no Snack (SDK 55)   | Testar no Snack ao fim das fases 2, 4 e 5; evitar bibliotecas extras.                |
 | Som ou AsyncStorage não funcionarem no Snack | Testar cedo; app funciona sem som e sem recorde.                                     |
-| Import do repositório no Snack falhou        | Usar "Import files"; deixar a fase 6 com folga.                                      |
+| Import do repositório no Snack falhou        | "Import files" testado e funcionando na fase 4 (com as pastas); usar na fase 6.      |
 | RAs do grupo                                 | Marcelo envia antes da fase 6.                                                       |
 
 ## Pendências do Marcelo
