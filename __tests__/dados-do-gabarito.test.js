@@ -1,11 +1,16 @@
 import { describe, expect, it } from '@jest/globals';
 
 import gabarito from '../src/data/gabarito.json';
-import { PERGUNTAS_POR_PROGRAMA, validarGabarito, validarPrograma } from '../src/logic/gabarito';
+import {
+  CORES,
+  PERGUNTAS_POR_PROGRAMA,
+  validarGabarito,
+  validarPrograma,
+} from '../src/logic/gabarito';
 
 describe('src/data/gabarito.json', () => {
-  it('tem estrutura válida (aceitando programas ainda em digitação)', () => {
-    expect(validarGabarito(gabarito, { exigirCompleto: false })).toEqual([]);
+  it('está completo e válido', () => {
+    expect(validarGabarito(gabarito)).toEqual([]);
   });
 
   it('tem os programas 1 a 5 com códigos 021 a 025', () => {
@@ -24,16 +29,18 @@ describe('src/data/gabarito.json', () => {
     });
   });
 
-  for (const programa of gabarito.programas) {
-    const nome = `Programa ${programa.numero} (${programa.codigo})`;
-    if (programa.perguntas.length < PERGUNTAS_POR_PROGRAMA) {
-      it.todo(
-        `${nome}: digitar gabarito (${programa.perguntas.length}/${PERGUNTAS_POR_PROGRAMA} perguntas)`,
-      );
-    } else {
-      it(`${nome}: gabarito completo e válido`, () => {
-        expect(validarPrograma(programa)).toEqual([]);
-      });
-    }
-  }
+  it('tem as 150 perguntas do livro, de 1 a 150', () => {
+    const numeros = gabarito.programas.flatMap((programa) =>
+      programa.perguntas.map((p) => p.numero),
+    );
+    expect(numeros).toEqual(Array.from({ length: 150 }, (_, indice) => indice + 1));
+  });
+
+  it.each(gabarito.programas.map((programa) => [programa.codigo, programa]))(
+    'programa %s: 30 respostas válidas',
+    (_, programa) => {
+      expect(validarPrograma(programa)).toEqual([]);
+      expect(programa.perguntas.every((pergunta) => CORES.includes(pergunta.resposta))).toBe(true);
+    },
+  );
 });

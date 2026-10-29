@@ -22,7 +22,7 @@ O livro tem 6 programas. Cada programa é aberto digitando o código dele, igual
 
 Regras de pontuação:
 
-- Cada programa tem **30 perguntas**, com 4 alternativas (as cores/letras do Pense Bem).
+- Cada programa tem **30 perguntas**. A pergunta é lida no livro, e cada alternativa tem uma cor: **vermelho, amarelo, azul ou verde**. O jogador responde apertando a tecla da cor.
 - O jogador tem **3 tentativas** por pergunta.
 - Acertou na 1ª tentativa: **3 pontos**. Na 2ª: **2 pontos**. Na 3ª: **1 ponto**. Errou as três: **0 pontos**.
 - No fim das 30 perguntas, o app mostra o **total de pontos** (máximo de 90 por programa).
@@ -105,17 +105,17 @@ Cada programa em `src/data/gabarito.json` tem número, código, a primeira pergu
   "numero": 1,
   "codigo": "021",
   "primeiraPergunta": 1,
-  "perguntas": [{ "numero": 1, "resposta": "A" }]
+  "perguntas": [{ "numero": 1, "resposta": "vermelho" }]
 }
 ```
 
-`enunciado` e `alternativas` (`{ "A": "...", "B": "...", "C": "...", "D": "..." }`) são opcionais. O `npm test` confere se cada programa tem 30 perguntas em sequência e se toda resposta é A, B, C ou D.
+O `numero` segue a numeração do livro (1 a 150) e a `resposta` é uma das cores `vermelho`, `amarelo`, `azul` ou `verde`. O `npm test` confere se cada programa tem 30 perguntas em sequência e se toda resposta é uma dessas cores.
 
 ## Andamento
 
 - [x] Repositório e projeto Expo criados
 - [x] Regras de pontuação e validação do gabarito, com testes
-- [ ] Gabarito dos programas digitado
+- [x] Gabarito dos programas 021 a 025 (em cores, com revisão em `docs/gabarito-revisao.md`)
 - [ ] Tela de escolha do programa (digitar o código)
 - [ ] Tela de pergunta com as 4 alternativas e 3 tentativas
 - [ ] Contagem de pontos e tela de resultado

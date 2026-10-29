@@ -8,23 +8,20 @@
  *   "codigo": "021",
  *   "primeiraPergunta": 1,
  *   "perguntas": [
- *     { "numero": 1, "resposta": "A" },
- *     { "numero": 2, "resposta": "C", "enunciado": "...", "alternativas": { "A": "...", "B": "...", "C": "...", "D": "..." } }
+ *     { "numero": 1, "resposta": "vermelho" },
+ *     { "numero": 2, "resposta": "azul" }
  *   ]
  * }
  *
- * `enunciado` e `alternativas` são opcionais; `numero` e `resposta` são obrigatórios.
+ * `numero` segue a numeração do livro (1 a 150); `resposta` é uma das {@link CORES}.
  */
 
 export const PERGUNTAS_POR_PROGRAMA = 30;
 
-export const ALTERNATIVAS = Object.freeze(['A', 'B', 'C', 'D']);
+/** Cores das alternativas, na ordem em que aparecem no livro e no documento de entrega. */
+export const CORES = Object.freeze(['vermelho', 'amarelo', 'azul', 'verde']);
 
 const FORMATO_DO_CODIGO = /^\d{3}$/;
-
-function ehTextoPreenchido(valor) {
-  return typeof valor === 'string' && valor.trim().length > 0;
-}
 
 function ehObjeto(valor) {
   return typeof valor === 'object' && valor !== null && !Array.isArray(valor);
@@ -42,28 +39,10 @@ function validarPergunta(pergunta, numeroEsperado) {
       `${rotulo}: número ${String(pergunta.numero)} fora de ordem (esperado ${numeroEsperado})`,
     );
   }
-  if (!ALTERNATIVAS.includes(pergunta.resposta)) {
+  if (!CORES.includes(pergunta.resposta)) {
     erros.push(
-      `${rotulo}: resposta "${String(pergunta.resposta)}" inválida (use ${ALTERNATIVAS.join(', ')})`,
+      `${rotulo}: resposta "${String(pergunta.resposta)}" inválida (use ${CORES.join(', ')})`,
     );
-  }
-  if ('enunciado' in pergunta && !ehTextoPreenchido(pergunta.enunciado)) {
-    erros.push(`${rotulo}: enunciado vazio`);
-  }
-  if ('alternativas' in pergunta) {
-    if (!ehObjeto(pergunta.alternativas)) {
-      erros.push(`${rotulo}: "alternativas" precisa ser um objeto com as chaves A, B, C e D`);
-    } else {
-      const chaves = Object.keys(pergunta.alternativas).sort();
-      if (chaves.join() !== ALTERNATIVAS.join()) {
-        erros.push(`${rotulo}: "alternativas" precisa ter exatamente as chaves A, B, C e D`);
-      }
-      for (const letra of ALTERNATIVAS) {
-        if (letra in pergunta.alternativas && !ehTextoPreenchido(pergunta.alternativas[letra])) {
-          erros.push(`${rotulo}: alternativa ${letra} vazia`);
-        }
-      }
-    }
   }
   return erros;
 }

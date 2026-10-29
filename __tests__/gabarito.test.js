@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals';
 
 import {
-  ALTERNATIVAS,
+  CORES,
   PERGUNTAS_POR_PROGRAMA,
   validarGabarito,
   validarPrograma,
@@ -14,7 +14,7 @@ function criarPrograma({ numero = 1, codigo = '021', primeiraPergunta = 1, quant
     primeiraPergunta,
     perguntas: Array.from({ length: quantidade }, (_, indice) => ({
       numero: primeiraPergunta + indice,
-      resposta: ALTERNATIVAS[indice % ALTERNATIVAS.length],
+      resposta: CORES[indice % CORES.length],
     })),
   };
 }
@@ -51,12 +51,22 @@ describe('validarPrograma', () => {
     ]);
   });
 
-  it.each(['E', 'a', '', null, undefined, 1])('rejeita resposta inválida: %p', (resposta) => {
+  it.each(CORES)('aceita a cor %s', (cor) => {
     const programa = criarPrograma();
-    programa.perguntas[0].resposta = resposta;
-    expect(validarPrograma(programa)).toHaveLength(1);
-    expect(validarPrograma(programa)[0]).toMatch(/^pergunta 1: resposta/);
+    programa.perguntas[0].resposta = cor;
+    expect(validarPrograma(programa)).toEqual([]);
   });
+
+  it.each(['A', 'Vermelho', 'VERDE', ' azul', 'roxo', '', null, undefined, 1])(
+    'rejeita resposta inválida: %p',
+    (resposta) => {
+      const programa = criarPrograma();
+      programa.perguntas[0].resposta = resposta;
+      expect(validarPrograma(programa)).toEqual([
+        `pergunta 1: resposta "${String(resposta)}" inválida (use vermelho, amarelo, azul, verde)`,
+      ]);
+    },
+  );
 
   it('detecta pergunta fora de ordem', () => {
     const programa = criarPrograma();
@@ -92,45 +102,18 @@ describe('validarPrograma', () => {
   it('rejeita entradas que não são objeto', () => {
     expect(validarPrograma(null)).toEqual(['programa não é um objeto']);
     const programa = criarPrograma();
-    programa.perguntas[0] = 'A';
+    programa.perguntas[0] = 'vermelho';
     expect(validarPrograma(programa)).toEqual(['pergunta 1: não é um objeto']);
   });
+});
 
-  describe('campos opcionais', () => {
-    it('aceita enunciado e alternativas preenchidos', () => {
-      const programa = criarPrograma();
-      programa.perguntas[0].enunciado = 'Qual é a cor do Sonic?';
-      programa.perguntas[0].alternativas = { A: 'Azul', B: 'Vermelho', C: 'Verde', D: 'Amarelo' };
-      expect(validarPrograma(programa)).toEqual([]);
-    });
+describe('CORES', () => {
+  it('segue a ordem do livro e do documento de entrega', () => {
+    expect(CORES).toEqual(['vermelho', 'amarelo', 'azul', 'verde']);
+  });
 
-    it('rejeita enunciado vazio', () => {
-      const programa = criarPrograma();
-      programa.perguntas[0].enunciado = '   ';
-      expect(validarPrograma(programa)).toEqual(['pergunta 1: enunciado vazio']);
-    });
-
-    it('rejeita alternativas sem as quatro letras', () => {
-      const programa = criarPrograma();
-      programa.perguntas[0].alternativas = { A: 'x', B: 'y', C: 'z' };
-      expect(validarPrograma(programa)).toEqual([
-        'pergunta 1: "alternativas" precisa ter exatamente as chaves A, B, C e D',
-      ]);
-    });
-
-    it('rejeita alternativa vazia', () => {
-      const programa = criarPrograma();
-      programa.perguntas[0].alternativas = { A: 'x', B: '', C: 'z', D: 'w' };
-      expect(validarPrograma(programa)).toEqual(['pergunta 1: alternativa B vazia']);
-    });
-
-    it('rejeita alternativas que não são objeto', () => {
-      const programa = criarPrograma();
-      programa.perguntas[0].alternativas = ['x', 'y', 'z', 'w'];
-      expect(validarPrograma(programa)).toEqual([
-        'pergunta 1: "alternativas" precisa ser um objeto com as chaves A, B, C e D',
-      ]);
-    });
+  it('não pode ser alterada', () => {
+    expect(Object.isFrozen(CORES)).toBe(true);
   });
 });
 
