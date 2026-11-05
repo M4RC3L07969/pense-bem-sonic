@@ -15,7 +15,7 @@ Entrega e apresentação: **17/11/2026**. Grupo: Marcelo de Moura Maia Júnior, 
    - teste no Snack (SDK 55) quando a fase mexer em código do app;
    - README ("Andamento") e este plano atualizados (sem commitar).
 5. Seguir o `CLAUDE.md`: JavaScript, JSDoc nas funções exportadas, sem comentário linha a linha, `StyleSheet` + tokens do tema, só peças que rodam no Expo Go/Snack.
-6. Direitos autorais: não desenhar o Sonic nem nenhum personagem, não usar logotipos (Pense Bem, Tectoy, SEGA), não copiar imagens do livro. O PDF fica em `referencias/` e nunca é versionado.
+6. Direitos autorais (decisão do Marcelo, 29/10): projeto acadêmico sem fins lucrativos, então pode usar o Sonic e os outros personagens (desenho simplificado ou ilustrações recortadas do livro), os nomes e as cores. Não copiar sprites, músicas ou efeitos sonoros dos jogos: sons só pelo `scripts/gerar-sons.js`. O PDF inteiro fica em `referencias/` e nunca é versionado.
 
 ## Decisões já tomadas
 

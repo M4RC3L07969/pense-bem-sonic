@@ -138,7 +138,7 @@ O `numero` segue a numeração do livro (1 a 150) e a `resposta` é uma das core
 
 ## Direitos autorais
 
-Projeto acadêmico, sem fins lucrativos. _Sonic the Hedgehog_ é marca registrada da SEGA. O livro _Pense Bem_ é da Editora Nova Cultural / Tectoy (licenciado da VTech). O PDF e as imagens do livro **não** fazem parte deste repositório — se for guardar uma cópia local, use a pasta `referencias/`, que é ignorada pelo Git.
+Projeto acadêmico, sem fins lucrativos. _Sonic the Hedgehog_ é marca registrada da SEGA. O livro _Pense Bem_ é da Editora Nova Cultural / Tectoy (licenciado da VTech). O app usa personagens e algumas ilustrações do livro apenas como tema deste trabalho escolar. O PDF do livro **não** faz parte deste repositório — se for guardar uma cópia local, use a pasta `referencias/`, que é ignorada pelo Git.
 
 ## Licença
 
