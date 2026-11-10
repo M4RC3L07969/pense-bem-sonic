@@ -132,6 +132,10 @@ export function Aparelho() {
   const [somLigado, alternarSom] = useSomLigado();
   const margens = useSafeAreaInsets();
   const { visor, corDestacada } = visorDoEstado(estado);
+  const rastroDoRecorde =
+    estado.fase === FASES.RESULTADO && estado.novoRecorde
+      ? `${estado.programa.codigo}|${visor.texto}`
+      : null;
 
   const apertar = useCallback(
     (acao) => {
@@ -161,7 +165,10 @@ export function Aparelho() {
         },
       ]}
     >
-      <Carcaca rodape={<TeclaSom ligado={somLigado} onPress={alternarSom} />}>
+      <Carcaca
+        rodape={<TeclaSom ligado={somLigado} onPress={alternarSom} />}
+        rastro={rastroDoRecorde}
+      >
         <Visor {...visor} />
         <Teclado onAcao={apertar} corDestacada={corDestacada} />
       </Carcaca>

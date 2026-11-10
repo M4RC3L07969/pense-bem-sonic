@@ -9,6 +9,7 @@ import { Animated, StyleSheet, Text, View } from 'react-native';
 import { TEMA } from '../theme';
 import { usePiscar, usePulo } from './animacoes';
 import { Digito } from './digito';
+import { Rastro } from './rastro';
 
 const { cores, fontes, formas } = TEMA;
 const CASAS = 3;
@@ -108,12 +109,14 @@ export function Visor({ texto = '', legenda, tentativa = null, maxTentativas = 3
       <View style={[styles.linha, styles.rodape]}>
         {aviso && <Aviso texto={aviso.texto} tom={aviso.tom} chave={chave} />}
       </View>
+      <Rastro chave={aviso?.tom === 'acerto' ? chave : null} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   visor: {
+    overflow: 'hidden',
     backgroundColor: cores.visorFundo,
     borderColor: cores.visorBorda,
     borderWidth: formas.bordaVisor,

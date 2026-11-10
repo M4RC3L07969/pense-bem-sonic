@@ -7,10 +7,16 @@
 import { useEffect, useState } from 'react';
 import { AccessibilityInfo, Animated, Easing, Platform } from 'react-native';
 
-const DRIVER_NATIVO = Platform.OS !== 'web';
+export const DRIVER_NATIVO = Platform.OS !== 'web';
 
 /** Duração de cada etapa das animações, em milissegundos. */
-export const DURACOES = Object.freeze({ pulo: 120, piscada: 140, pulsacao: 380 });
+export const DURACOES = Object.freeze({
+  pulo: 120,
+  piscada: 140,
+  pulsacao: 380,
+  rastro: 420,
+  abertura: 1800,
+});
 
 function animar(valor, para, duracao) {
   return Animated.timing(valor, {

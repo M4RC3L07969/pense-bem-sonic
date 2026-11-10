@@ -7,6 +7,7 @@
 import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 
 import { TEMA } from '../theme';
+import { Rastro } from './rastro';
 
 const { cores, fontes, formas, larguraMaxima, larguraDeTelaEstreita } = TEMA;
 const LARGURAS_DAS_FAIXAS = Object.freeze([56, 42, 28]);
@@ -34,6 +35,7 @@ function Faixas() {
  * @param {string} [props.titulo] Nome do jogo, no alto.
  * @param {string} [props.subtitulo] Linha abaixo do título.
  * @param {import('react').ReactNode} [props.rodape] Peça pequena no pé do aparelho (o botão de som).
+ * @param {string | null} [props.rastro] Quando muda, faixas de velocidade cruzam o aparelho todo.
  * @returns {JSX.Element}
  */
 export function Carcaca({
@@ -41,6 +43,7 @@ export function Carcaca({
   titulo = 'Pense Bem',
   subtitulo = 'Uma aventura científica com Sonic',
   rodape = null,
+  rastro = null,
 }) {
   const estreita = useWindowDimensions().width < larguraDeTelaEstreita;
 
@@ -61,6 +64,7 @@ export function Carcaca({
       </View>
       {children}
       {rodape && <View style={styles.rodape}>{rodape}</View>}
+      <Rastro chave={rastro} passagens={2} espessura={12} />
     </View>
   );
 }
