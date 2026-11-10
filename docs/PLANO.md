@@ -108,6 +108,15 @@ Entrega e apresentação: **17/11/2026**. Grupo: Marcelo de Moura Maia Júnior, 
 
 **Ponto de parada 5:** o Marcelo testa no iPhone. Propor o commit.
 
+## Extra — Clima de velocidade e ciência (10/11) — concluída
+
+**Objetivo:** deixar o app mais caracterizado só com elementos originais (sem o personagem, sem ilustrações do livro e sem artes dos jogos).
+
+1. **Abertura** dentro do app (`abertura.js`): faixas de velocidade cruzam a tela, o átomo gira e o nome do jogo entra; dura menos de 2 s e um toque pula. Com "Reduzir movimento", aparece parada por um instante. Aparece em qualquer lugar (Expo Go, Snack e navegador).
+2. **Rastro de velocidade** (`rastro.js`): faixas amarelas cruzam o visor no acerto e o aparelho inteiro no novo recorde.
+3. **Átomo** (`atomo.js`): símbolo da "aventura científica", desenhado com `View`.
+4. **Ícone e favicon** novos, gerados por script: o aparelho com um "?" no visor e as 4 teclas coloridas. Só aparecem num app instalado ou no navegador (o Expo Go e o Snack usam o ícone deles).
+
 ## Fase 6 — Entrega (12/11 – 14/11)
 
 1. **Snack:** criar o Snack na conta Expo do Marcelo pelo Chrome dele (ele já está logado). Se o "Import git repository" continuar falhando, enviar os arquivos pelo "Import files". Testar nas prévias Web, Android e iOS do Snack.

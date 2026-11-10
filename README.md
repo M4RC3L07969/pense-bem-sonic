@@ -34,6 +34,7 @@ No app:
 - No resultado, `ENTER` joga o mesmo programa de novo e `LIVRO` troca de programa. O melhor resultado de cada programa fica salvo no aparelho.
 - No navegador do computador, também dá para usar o teclado: números, `Enter`, `Backspace` (apagar) e `Esc` (LIVRO).
 - O botão **SOM**, no pé do aparelho, liga e desliga os sons. O som segue o modo silencioso do celular.
+- Ao abrir, uma abertura curta mostra o nome do jogo; um toque pula. No acerto e no novo recorde, faixas de velocidade cruzam o visor ou o aparelho.
 
 ## Como rodar
 
